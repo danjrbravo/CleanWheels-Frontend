@@ -1,0 +1,55 @@
+@font-face{
+    font-family: "Lemon-Regular";
+    src: url('../fonts/Lemon-Regular.ttf')
+}
+.hero-section{
+    background-image: 
+    linear-gradient(rgba(0, 0, 0, 0.3), rgba(0,0,0,0.3)),
+    url('../assets/bluehellcat.jpg');
+    background-repeat: no-repeat;
+    background-size:cover;
+    background-position: center;
+    width: 100%;
+    height: 50vh;
+    display:flex;
+    align-items: center;
+    justify-content: space-evenly;
+}
+
+.hero-left{
+    width: 40%;
+    display:flex;
+    flex-direction: column;
+    align-items: start;
+    justify-content: space-around;
+}
+.hero-left h1{
+    font-family:"Lemon-Regular";
+    font-size: 3rem;
+    font-weight: 800;
+    color: white;
+    line-height: 1.2;
+    margin-bottom: 1rem;
+    text-shadow:
+        1px 1px 0 black,
+        -1px 1px 0 black,
+        1px -1px 0 black,
+        -1px -1px 0 black,
+        0px 4px 10px rgba(0,0,0,0.6);
+}
+
+.hero-left span{
+    font-size: 1.2rem;
+    color: rgba(255,255,255,0.85);
+    margin-bottom: 1.5rem;
+}
+.hero-left button{
+    background-color: yellow;
+    border-radius: 10px;
+    font-size: 2rem;
+}
+.hero-right img{
+    width: 300px;
+    height: 300px;
+    box-shadow: 5px 5px 5px black;
+}

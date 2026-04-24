@@ -1,0 +1,16 @@
+.divider{
+    width: 100%;
+    height: 30px;
+    background-color: #91ADB1;
+    border-top: 10px solid gray;
+    border-bottom: 10px solid gray;
+}
+.services-horizontal{
+    margin-top: 10px;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap:20px;
+    padding: 0px 20px;
+}

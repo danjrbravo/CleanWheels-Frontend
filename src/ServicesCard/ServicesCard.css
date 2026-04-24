@@ -1,0 +1,14 @@
+.card{
+    background-color: aquamarine;
+    border: 2px solid black;
+    border-radius: 5px;
+    width: 200px;
+    height: auto;
+}
+.card-container{
+    display: flex;
+    justify-content: space-evenly;
+    align-content: center;
+    gap:10px;
+    flex: 1;
+}
