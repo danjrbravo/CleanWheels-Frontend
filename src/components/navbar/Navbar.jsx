@@ -1,5 +1,5 @@
 import React, { useState } from "react"
-import Logo from '../assets/CleanWheels.svg'
+import Logo from '../../assets/CleanWheels.svg'
 import './Navbar.css'
 
 const Navbar = () => {

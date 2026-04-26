@@ -1,11 +1,11 @@
 @font-face{
     font-family: "Lemon-Regular";
-    src: url('../fonts/Lemon-Regular.ttf')
+    src: url('../../../../fonts/Lemon-Regular.ttf')
 }
 .hero-section{
     background-image: 
     linear-gradient(rgba(0, 0, 0, 0.3), rgba(0,0,0,0.3)),
-    url('../assets/bluehellcat.jpg');
+    url('../../../../assets/bluehellcat.jpg');
     background-repeat: no-repeat;
     background-size:cover;
     background-position: center;
