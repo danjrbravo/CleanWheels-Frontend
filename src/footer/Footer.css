@@ -1,0 +1,61 @@
+@font-face{
+    font-family: "Lemon-Regular";
+    src: url('../fonts/Lemon-Regular.ttf')
+}
+.footer {
+    background-color: #6B7A7D; 
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 30px 60px;
+    color: black;
+}
+.footer p,
+.footer a,
+.footer li {
+    margin: 0;
+}
+.footer h3,
+.footer h4 {
+    min-height: 40px; /* 👈 ajusta este valor */
+    display: flex;
+    align-items: flex-end; 
+    margin: 0;
+    margin-bottom: 10px;
+}
+
+.footer-left,
+.footer-mid,
+.footer-right {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.footer-left {
+    width: 30%;
+}
+.footer-left h3{
+    font-family: "Lemon-Regular";
+}
+.footer-mid {
+    width: 30%;
+}
+
+.footer-right {
+    width: 30%;
+}
+
+.footer-right .footer-info {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.footer-bottom {
+    border-top: 1px solid #4f5759;
+    text-align: center;
+    padding: 10px 0;
+    font-size: 14px;
+    background-color: #6B7A7D;
+}
