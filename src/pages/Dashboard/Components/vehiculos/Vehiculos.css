@@ -1,0 +1,196 @@
+/* ── Vehiculos page ───────────────────────────────────────── */
+.vehiculos-container {
+  max-width: 860px;
+}
+
+.vehiculos-title {
+  margin: 0 0 16px;
+  font-size: 30px;
+  font-weight: 800;
+  color: #111827;
+}
+
+/* Search */
+.vehiculos-search {
+  display: block;
+  padding: 7px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 13px;
+  width: 200px;
+  margin-bottom: 20px;
+  color: #374151;
+  background: #ffffff;
+  outline: none;
+  transition: border-color 0.15s;
+}
+
+.vehiculos-search:focus {
+  border-color: #6b7280;
+}
+
+/* Stats cards */
+.vehiculos-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.stat-card {
+  background: #f3f4f6;
+  border-radius: 10px;
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.stat-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #374151;
+}
+
+.stat-value {
+  font-size: 28px;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.stat-value.neutral  { color: #374151; }
+.stat-value.green    { color: #16a34a; }
+.stat-value.amber    { color: #d97706; }
+.stat-value.red      { color: #dc2626; }
+
+/* Filter tabs */
+.vehiculos-filters {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.filter-btn {
+  padding: 7px 18px;
+  border-radius: 8px;
+  border: 1px solid #d1d5db;
+  background: #ffffff;
+  font-size: 13px;
+  font-weight: 500;
+  color: #374151;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+
+.filter-btn:hover {
+  background: #f3f4f6;
+}
+
+.filter-btn.active {
+  background: #2563eb;
+  color: #ffffff;
+  border-color: #2563eb;
+}
+
+/* Table wrapper */
+.vehiculos-table-wrapper {
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid #e5e7eb;
+}
+
+.vehiculos-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.vehiculos-table thead tr {
+  background: #4b5563;
+  color: #ffffff;
+}
+
+.vehiculos-table th {
+  padding: 11px 16px;
+  text-align: left;
+  font-weight: 600;
+  font-size: 13px;
+}
+
+.vehiculos-table tbody tr {
+  border-bottom: 1px solid #f3f4f6;
+  background: #ffffff;
+  transition: background 0.1s;
+}
+
+.vehiculos-table tbody tr:hover {
+  background: #f9fafb;
+}
+
+.vehiculos-table td {
+  padding: 11px 16px;
+  color: #374151;
+}
+
+/* Status badges */
+.status-badge {
+  display: inline-block;
+  padding: 3px 12px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.status-completed {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+.status-active {
+  background: #dbeafe;
+  color: #1d4ed8;
+}
+
+.status-cancelled {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+/* Pagination */
+.vehiculos-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 10px;
+  background: #4b5563;
+}
+
+.page-btn {
+  min-width: 28px;
+  height: 28px;
+  padding: 0 6px;
+  border-radius: 6px;
+  border: none;
+  background: transparent;
+  color: #e5e7eb;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+
+.page-btn:hover:not(:disabled) {
+  background: #6b7280;
+  color: #ffffff;
+}
+
+.page-btn.active {
+  background: #2563eb;
+  color: #ffffff;
+}
+
+.page-btn:disabled {
+  opacity: 0.35;
+  cursor: default;
+}

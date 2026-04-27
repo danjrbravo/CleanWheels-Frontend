@@ -1,11 +1,11 @@
 import { useState } from 'react'
-import Home from './Home/Home'
-import Login from './Login/Login'
-
+import Home from './pages/Home/Home'
+import Dashboard from './pages/Dashboard/Dashboard'
 function App() {
 
   return (
     <>
+    <Dashboard/>
     </>
   )
 }
