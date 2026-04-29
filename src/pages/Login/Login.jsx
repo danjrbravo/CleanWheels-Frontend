@@ -1,8 +1,8 @@
 
-import loginImg from '../assets/bluehellcat.jpg'
-import Navbar from '../navbar/Navbar'
+import loginImg from '../../assets/bluehellcat.jpg'
+import Navbar from '../../components/navbar/Navbar'
 import './Login.css'
-import googleLogo from "../assets/google_icon.svg";
+import googleLogo from "../../assets/google_icon.svg";
 
 
 function Login() {
