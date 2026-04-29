@@ -1,4 +1,3 @@
-
 import Card from './Card';
 
 function Category(props) {
@@ -6,16 +5,16 @@ function Category(props) {
     <div className="categoria">
       <h2>{props.titulo}</h2>
       <div className="tarjetas_container">
-              {props.servicios.map((servicio) => (
-                  <Card
-                      key={servicio.id}
-                      imagen={servicio.imagen}
-                      nombre={servicio.nombre}
-                      descripcion={servicio.descripcion}
-                      duracion={servicio.duracion}
-                      precio={servicio.precio}
-                  />
-              ))}
+        {props.servicios.map((servicio) => (
+          <Card
+            key={servicio.id}
+            imagen={servicio.imagen}
+            name={servicio.name}
+            description={servicio.description}
+            duration={servicio.duration}
+            price={servicio.price}
+          />
+        ))}
       </div>
     </div>
   );

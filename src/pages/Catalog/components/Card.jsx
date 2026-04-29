@@ -2,13 +2,13 @@ function Card(props) {
   return (
     <div className="tarjeta">
       <div className="tarjeta_img_container">
-        <img src={props.imagen} alt={props.nombre} className="tarjeta_img" />
+        <img src={props.imagen} alt={props.name} className="tarjeta_img" />
       </div>
       <div className="tarjeta_content">
-        <h3>{props.nombre}</h3>
-        <p>{props.descripcion}</p>
-        <p>Duración: {props.duracion}</p>
-        <p className="tarjeta_precio">Precio: {props.precio}</p>
+        <h3>{props.name}</h3>
+        <p>{props.description}</p>
+        <p>Duración: {props.duration} min</p>
+        <p className="tarjeta_precio">Precio: ${props.price}</p>
       </div>
     </div>
   );

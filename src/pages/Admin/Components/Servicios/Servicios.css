@@ -1,0 +1,138 @@
+.servicios_tabla {
+  width: 100% !important;
+  border-collapse: collapse !important;
+  background-color: white !important;
+  border-radius: 12px !important;
+  overflow: hidden !important;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08) !important;
+}
+
+.servicios_tabla thead {
+  background-color: #1C1C1C !important;
+  color: white !important;
+}
+
+.servicios_tabla th {
+  padding: 14px 16px !important;
+  text-align: left !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+}
+
+.servicios_tabla td {
+  padding: 14px 16px !important;
+  font-size: 14px !important;
+  color: #374151 !important;
+  border-bottom: 1px solid #f3f4f6 !important;
+}
+
+.btn_editar {
+  padding: 6px 14px !important;
+  background-color: #00E5FF !important;
+  color: #111827 !important;
+  font-weight: 600 !important;
+  border: none !important;
+  border-radius: 6px !important;
+  cursor: pointer !important;
+}
+
+.btn_eliminar {
+  padding: 6px 14px !important;
+  background-color: #fee2e2 !important;
+  color: #991b1b !important;
+  font-weight: 600 !important;
+  border: none !important;
+  border-radius: 6px !important;
+  cursor: pointer !important;
+}
+
+.badge.activo {
+  background-color: #d1fae5 !important;
+  color: #065f46 !important;
+  padding: 4px 12px !important;
+  border-radius: 20px !important;
+  font-size: 12px !important;
+}
+
+.badge.inactivo {
+  background-color: #fee2e2 !important;
+  color: #991b1b !important;
+  padding: 4px 12px !important;
+  border-radius: 20px !important;
+  font-size: 12px !important;
+}
+.servicios_formulario {
+  background-color: white !important;
+  border-radius: 12px !important;
+  padding: 25px !important;
+  margin-bottom: 25px !important;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08) !important;
+  border-top: 3px solid #00E5FF !important;
+}
+
+.servicios_formulario h2 {
+  font-size: 18px !important;
+  font-weight: 700 !important;
+  color: #111827 !important;
+  margin: 0 0 20px !important;
+}
+
+.formulario_grid {
+  display: grid !important;
+  grid-template-columns: repeat(2, 1fr) !important;
+  gap: 15px !important;
+  margin-bottom: 20px !important;
+}
+
+.formulario_grid input {
+  padding: 10px 14px !important;
+  border: 1px solid #d1d5db !important;
+  border-radius: 8px !important;
+  font-size: 14px !important;
+  outline: none !important;
+}
+
+.formulario_botones {
+  display: flex !important;
+  gap: 10px !important;
+}
+
+.btn_guardar {
+  padding: 10px 24px !important;
+  background-color: #00E5FF !important;
+  color: #111827 !important;
+  font-weight: 700 !important;
+  border: none !important;
+  border-radius: 8px !important;
+  cursor: pointer !important;
+}
+
+.btn_cancelar {
+  padding: 10px 24px !important;
+  background-color: white !important;
+  color: #111827 !important;
+  font-weight: 600 !important;
+  border: 1px solid #d1d5db !important;
+  border-radius: 8px !important;
+  cursor: pointer !important;
+}
+
+div.servicios_header {
+  display: flex !important;
+  flex-direction: row !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  margin-bottom: 25px !important;
+  width: 100% !important;
+}
+
+.btn_agregar {
+  padding: 10px 24px !important;
+  background-color: #00E5FF !important;
+  color: #111827 !important;
+  font-weight: 700 !important;
+  border: none !important;
+  border-radius: 8px !important;
+  cursor: pointer !important;
+  font-size: 14px !important;
+}
