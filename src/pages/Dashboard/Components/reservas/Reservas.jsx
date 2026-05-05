@@ -1,5 +1,6 @@
 import { useState } from "react";
 import "./Reservas.css";
+import ModalServicios from "../servicios/ModalServicios";
 
 const TIME_SLOTS = [
   "8:00 AM - 9:00 AM",
@@ -12,8 +13,6 @@ const TIME_SLOTS = [
   "5:00 PM - 6:00 PM",
 ];
 
-// Datos mock — reemplazar con fetch más adelante
-// true = disponible, false = no disponible, null = sin slot
 const MOCK_DATA = {
   "8:00 AM - 9:00 AM":   [true,  true,  true,  true,  true ],
   "9:00 AM - 10:00 AM":  [true,  true,  true,  true,  true ],
@@ -36,7 +35,6 @@ const MOCK_CUPOS = {
   "5:00 PM - 6:00 PM":   [0, 2, 1, 1, 0],
 };
 
-// ── Date helpers ────────────────────────────────────────────
 function getStartOfWeek(date) {
   const d = new Date(date);
   const day = d.getDay();
@@ -55,7 +53,6 @@ function formatDateRange(start, end) {
   return `${start.toLocaleDateString("es-CO", opts)} — ${end.toLocaleDateString("es-CO", opts)}`;
 }
 
-// ── Icons ───────────────────────────────────────────────────
 const CalendarIcon = () => (
   <svg width="15" height="15" viewBox="0 0 24 24" fill="none"
     stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
@@ -66,12 +63,21 @@ const CalendarIcon = () => (
   </svg>
 );
 
-// ── Component ───────────────────────────────────────────────
 export default function Reservas() {
-  const [weekStart, setWeekStart] = useState(() => getStartOfWeek(new Date()));
+  const [weekStart, setWeekStart]       = useState(() => getStartOfWeek(new Date()));
+  const [showModal, setShowModal]       = useState(false);
+  const [servicioSeleccionado, setServicioSeleccionado] = useState(null);
 
-  const days = Array.from({ length: 5 }, (_, i) => addDays(weekStart, i));
+  const days   = Array.from({ length: 5 }, (_, i) => addDays(weekStart, i));
   const weekEnd = addDays(weekStart, 4);
+
+  // Cuando el usuario elige un servicio y presiona "Agendar" en el modal
+  const handleAgendarServicio = (servicio) => {
+    setServicioSeleccionado(servicio);
+    setShowModal(false);
+    // TODO: abrir aquí el modal de crear reservación pasándole `servicio`
+    console.log("Servicio seleccionado:", servicio);
+  };
 
   return (
     <div className="reservas-container">
@@ -84,7 +90,9 @@ export default function Reservas() {
           <CalendarIcon />
           <span>{formatDateRange(weekStart, weekEnd)}</span>
         </div>
-        <button className="btn-agendar">Agendar</button>
+        <button className="btn-agendar" onClick={() => setShowModal(true)}>
+          Agendar
+        </button>
       </div>
 
       {/* Grid */}
@@ -92,19 +100,16 @@ export default function Reservas() {
         <button className="arrow-btn" onClick={() => setWeekStart(d => addDays(d, -7))}>‹</button>
 
         <div className="reservas-grid">
-          {/* Column headers */}
           <div className="cell header-cell time-col">Hora | Día</div>
           {days.map((d, i) => (
             <div key={i} className="cell header-cell day-col">{d.getDate()}</div>
           ))}
 
-          {/* Rows */}
           {TIME_SLOTS.map((slot) => {
             const isBreak = slot === "12:00 AM - 2:00 AM";
             return (
               <div key={slot} className="row-group">
                 <div className={`cell time-cell${isBreak ? " break-time" : ""}`}>{slot}</div>
-
                 {days.map((_, col) => {
                   if (isBreak) return <div key={col} className="cell break-slot" />;
 
@@ -114,9 +119,8 @@ export default function Reservas() {
                   if (available === null || available === undefined)
                     return <div key={col} className="cell slot empty" />;
 
-                  const cls = available ? "slot available" : "slot unavailable";
                   return (
-                    <div key={col} className={`cell ${cls}`}>
+                    <div key={col} className={`cell slot ${available ? "available" : "unavailable"}`}>
                       <span className="slot-title">
                         {available ? "Disponible" : "No Disponible"}
                       </span>
@@ -133,6 +137,14 @@ export default function Reservas() {
 
         <button className="arrow-btn" onClick={() => setWeekStart(d => addDays(d, 7))}>›</button>
       </div>
+
+      {/* Modal servicios */}
+      {showModal && (
+        <ModalServicios
+          onClose={() => setShowModal(false)}
+          onAgendar={handleAgendarServicio}
+        />
+      )}
     </div>
   );
 }
