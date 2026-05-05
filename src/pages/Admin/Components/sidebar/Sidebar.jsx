@@ -1,3 +1,5 @@
+
+import { useNavigate } from "react-router-dom";
 import "./Sidebar.css";
 
 const CalendarIcon = () => (
@@ -69,6 +71,7 @@ const NAV_ITEMS = [
 ];
 
 export default function Sidebar({ activePage, onNavigate }) {
+  const navigate = useNavigate();
   return (
     <aside className="sidebar">
 
@@ -111,7 +114,7 @@ export default function Sidebar({ activePage, onNavigate }) {
           <span className="sidebar-nav-label">Administrar Servicios</span>
         </button>
 
-        <button className="sidebar-logout">
+        <button className="sidebar-logout" onClick={() => navigate("/")}>
           <span className="sidebar-nav-icon">
             <LogoutIcon />
           </span>
