@@ -1,7 +1,7 @@
 import { useState } from "react";
-import Sidebar from "./Components/sidebar/Sidebar";
-import Reservas from "./Components/reservas/Reservas";
-import Vehiculos from "./Components/vehiculos/Vehiculos";
+import Sidebar from "./components/sidebar/Sidebar";
+import Reservas from "./components/reservas/Reservas";
+import Vehiculos from "./components/vehiculos/Vehiculos";
 import "./Dashboard.css";
  
 const PAGES = {

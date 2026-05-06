@@ -1,11 +1,9 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { useState } from 'react'
 import Home from './pages/Home/Home'
 import Dashboard from './pages/Dashboard/Dashboard'
 import Login from './pages/Login/Login'
 import Catalog from './pages/Catalog/Catalog'
 import Admin from './pages/Admin/Admin'
-import Callback from './pages/Callback/Callback'
-
 function App() {
   return (
     <BrowserRouter>

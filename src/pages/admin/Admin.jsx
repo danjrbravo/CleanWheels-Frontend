@@ -1,11 +1,11 @@
 
 
-import Sidebar from "./Components/Sidebar/Sidebar.jsx"
-import Reservas from "../Dashboard/Components/Reservas/Reservas.jsx"
-import Vehiculos from "../Dashboard/Components/Vehiculos/Vehiculos.jsx"
-import Reportes from "./Components/Reportes/Reportes.jsx"
-import Feedback from "./Components/Feedback/Feedback.jsx"
-import Servicios from "./Components/Servicios/Servicios.jsx"
+import Sidebar from "./components/sidebar/Sidebar.jsx"
+import Reservas from "../dashboard/components/reservas/Reservas.jsx"
+import Vehiculos from "../dashboard/components/vehiculos/Vehiculos.jsx"
+import Reportes from "./components/reportes/Reportes.jsx"
+import Feedback from "./components/feedback/Feedback.jsx"
+import Servicios from "./components/servicios/Servicios.jsx"
 
 import { useState } from "react"
 import "./Admin.css"
