@@ -1,11 +1,15 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 function Callback() {
   const [status, setStatus] = useState("Autenticando...");
   const navigate = useNavigate();
+  const hasFetched = useRef(false);
 
   useEffect(() => {
+    if (hasFetched.current) return;
+    hasFetched.current = true;
+
     const params = new URLSearchParams(window.location.search);
     const code = params.get("code");
 
@@ -21,14 +25,22 @@ function Callback() {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ code }),
         });
-
-        if (!response.ok) throw new Error("Error al autenticar");
-
+        if (!response.ok) throw new Error();
         const data = await response.json();
 
+      
         localStorage.setItem("token", data.token);
 
-        navigate("/dashboard");
+       
+        const payload = JSON.parse(atob(data.token.split(".")[1]));
+        localStorage.setItem("user", JSON.stringify(payload));
+
+       
+        if (payload.rol === "ADMIN") {
+          navigate("/admin");
+        } else {
+          navigate("/dashboard");
+        }
       } catch (err) {
         setStatus("Error al iniciar sesión. Intenta de nuevo.");
       }

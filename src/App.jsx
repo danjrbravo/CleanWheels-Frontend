@@ -1,22 +1,45 @@
-import { useState } from 'react'
-import Home from './pages/Home/Home'
-import Dashboard from './pages/Dashboard/Dashboard'
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { useEffect } from 'react'
+import Home from './pages/home/Home'
+import Dashboard from './pages/dashboard/Dashboard'
 import Login from './pages/Login/Login'
-import Catalog from './pages/Catalog/Catalog'
-import Admin from './pages/Admin/Admin'
-function App() {
+import Catalog from './pages/catalog/Catalog'
+import Admin from './pages/admin/Admin'
+import Callback from './pages/callback/Callback'
+import ProtectedRoute from './components/ProtectedRoute'
+
+export default function App() {
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      fetch("http://localhost:8080/api/auth/guest", { method: "POST" })
+        .then(res => res.json())
+        .then(data => {
+          const token = data.token?.token || data.token;
+          if (token) localStorage.setItem("token", token);
+        })
+        .catch(err => console.error("Error generando token guest:", err));
+    }
+  }, []);
+
   return (
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/catalog" element={<Catalog />} />
-        <Route path="/admin" element={<Admin />} />
         <Route path="/google/callback" element={<Callback />} />
+        <Route path="/dashboard" element={
+          <ProtectedRoute allowedRoles={["CLIENT"]}>
+            <Dashboard />
+          </ProtectedRoute>
+        } />
+        <Route path="/admin" element={
+          <ProtectedRoute allowedRoles={["ADMIN"]}>
+            <Admin />
+          </ProtectedRoute>
+        } />
       </Routes>
     </BrowserRouter>
   )
 }
-
-export default App
