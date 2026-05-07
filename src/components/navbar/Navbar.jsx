@@ -1,9 +1,11 @@
 import React, { useState } from "react"
+import { useNavigate } from "react-router-dom"
 import Logo from '../../assets/CleanWheels.svg'
 import './Navbar.css'
 
 const Navbar = () => {
     const [active, setActive] = useState("Inicio");
+    const navigate = useNavigate();
 
     return (
         <nav className="navbar">
@@ -16,15 +18,19 @@ const Navbar = () => {
                 <ul className="nav-links">
                     <li
                         className={active === "Inicio" ? "active" : ""}
-                        onClick={() => setActive("Inicio")}
+                        onClick={() => { setActive("Inicio"); navigate("/"); }}
                     >
                         Inicio
                     </li>
                 </ul>
             </div>
             <div className="navbar-right">
-                <div className="btn-catalogo"><p>Catalogo</p></div>
-                <div className="btn-login"><p>Agendar</p></div>
+                <div className="btn-catalogo" onClick={() => navigate("/catalog")}>
+                    <p>Catalogo</p>
+                </div>
+                <div className="btn-login" onClick={() => navigate("/login")}>
+                    <p>Agendar</p>
+                </div>
             </div>
         </nav>
     )

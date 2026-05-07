@@ -1,4 +1,3 @@
-
 *, *::before, *::after {
   box-sizing: border-box;
 }
@@ -10,10 +9,10 @@ body {
   color: #111827;
 }
 
-
 .app-layout {
   display: flex;
   min-height: 100vh;
+  position: relative;
 }
 
 .app-main {
@@ -21,4 +20,6 @@ body {
   overflow-y: auto;
   padding: 32px;
   background-color: #ffffff;
+  position: relative;
+  z-index: 1;
 }

@@ -42,7 +42,7 @@ const NAV_ITEMS = [
   { id: "vehiculos", label: "Vehículos", Icon: TruckIcon },
 ];
 
-export default function Sidebar({ activePage, onNavigate }) {
+export default function Sidebar({ activePage, onNavigate, onLogout }) {
   return (
     <aside className="sidebar">
 
@@ -75,7 +75,7 @@ export default function Sidebar({ activePage, onNavigate }) {
 
       {/* Log out */}
       <div className="sidebar-footer">
-        <button className="sidebar-logout">
+        <button className="sidebar-logout" onClick={onLogout}>
           <span className="sidebar-nav-icon">
             <LogoutIcon />
           </span>

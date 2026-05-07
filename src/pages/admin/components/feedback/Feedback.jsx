@@ -14,7 +14,7 @@ const Estrellas = ({ cantidad }) => (
   <div className="estrellas">
     {[1, 2, 3, 4, 5].map((i) => (
       <span key={i} className={i <= cantidad ? 'estrella activa' : 'estrella'}>★</span>
-    ))}
+    ))} 
   </div>
 )
 
