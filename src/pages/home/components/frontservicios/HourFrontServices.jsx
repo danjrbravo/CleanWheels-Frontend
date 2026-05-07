@@ -3,10 +3,14 @@ import ServicesCard from '../ServicesCard/ServicesCard';
 import './HourFrontServices.css'
 
 const HourFrontServices = () => {
-  const [hour,setHour] = useState(`${new Date().getHours().toString()}:00`)
+  const [hour, setHour] = useState(`${new Date().getHours().toString().padStart(2, '0')}:00`)
+  const [reservations, setReservations] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
+
   useEffect(() => {
     const updateHour = () => {
-      setHour(`${new Date().getHours()}:00`);
+      setHour(`${new Date().getHours().toString().padStart(2, '0')}:00`);
     };
 
     const now = new Date();
@@ -25,20 +29,68 @@ const HourFrontServices = () => {
 
     return () => clearTimeout(timeout);
   }, []);
-  console.log(hour)
-      const tarjetas = [
-    { id: 1, hour: "10:00", state: "activo", ref: "A1" },
-    { id: 2, hour: "11:00", state: "inactivo", ref: "B2" },
-    { id: 3, hour: "10:00", state: "activo", ref: "C3" },
-    { id: 4, hour: "8:00", state: "activo", ref: "D3" },
-    { id: 5, hour: "9:00", state: "activo", ref: "D4" }
-  ];
+
+  useEffect(() => {
+    const fetchReservations = async () => {
+      try {
+        setLoading(true)
+        const token = localStorage.getItem('token')
+        
+        if (!token) {
+          setError('Token no encontrado')
+          setLoading(false)
+          return
+        }
+
+        const response = await fetch('http://localhost:8080/api/booking/reservations/upcoming', {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          }
+        })
+
+        if (!response.ok) {
+          throw new Error(`Error: ${response.status}`)
+        }
+
+        const data = await response.json()
+        
+        if (data.success && data.data) {
+          setReservations(data.data)
+          setError(null)
+        } else {
+          setError('Error en la respuesta del servidor')
+        }
+      } catch (err) {
+        setError(err.message)
+        console.error('Error fetching reservations:', err)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchReservations()
+  }, [])
+
+  if (loading) {
+    return <div className='loading-container'>Cargando reservas...</div>
+  }
+
+  if (error) {
+    return <div className='error-container'>Error: {error}</div>
+  }
+  console.log('Reservations data:', reservations)
+
   return (
     <div>
         <div className='divider'></div>
-        <div className='services-horizontal'>
-          <h1>Tarjetas de las {hour}</h1>
-          <ServicesCard hour={hour} cards={tarjetas}/>
+        <div className='services-container'>
+          <div className='title-wrapper'>
+            <h1>💧 ¡¡Reservas para el dia de HOY!! 💧</h1>
+            <p className='title-subtitle'>Tu lavado perfecto te espera</p>
+          </div>
+          <ServicesCard currentHour={hour} reservations={reservations}/>
         </div>
     </div>
   )
