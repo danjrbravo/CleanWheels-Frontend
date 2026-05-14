@@ -68,7 +68,7 @@ export default function ModalFormReserva({ servicios, onClose, onConfirmada, onV
         throw new Error("No se encontró ID de usuario en el token");
       }
 
-      fetch(`http://localhost:8080/api/booking/reservations/${userId}/vehicles`, {
+      fetch(`http://localhost:8080/api/booking/vehicles/${userId}`, {
         headers: {
           "Authorization": `Bearer ${token}`,
           "Content-Type": "application/json",
