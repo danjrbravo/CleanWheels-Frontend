@@ -1,9 +1,10 @@
 import Sidebar from "./components/sidebar/Sidebar.jsx"
 import Reservas from "../dashboard/components/reservas/Reservas.jsx"
-import Vehiculos from "./components/vehiculos/vehiculos.jsx"
+//import Vehiculos from "./components/vehiculos/vehiculos.jsx"
 import Reportes from "./components/reportes/Reportes.jsx"
 import Feedback from "./components/feedback/Feedback.jsx"
 import Servicios from "./components/servicios/Servicios.jsx"
+import ReservasActuales from "./components/reservasActuales/ReservasActuales.jsx"
 
 import { useState } from "react"
 import { useNavigate } from "react-router-dom"
@@ -11,7 +12,7 @@ import "./Admin.css"
 
 const PAGES = {
   reservas: <Reservas />,
-  vehiculos: <Vehiculos />,
+  // vehiculos: <Vehiculos />,
   reportes: <Reportes />,
   feedback: <Feedback />,
   servicios: <Servicios />,
