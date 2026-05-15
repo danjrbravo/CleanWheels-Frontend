@@ -14,7 +14,9 @@ const PAGES = {
   vehiculos: <Vehiculos />,
   reportes: <Reportes />,
   feedback: <Feedback />,
-  servicios: <Servicios />
+  servicios: <Servicios />,
+  reservasActuales: <ReservasActuales />
+
 }
 
 export default function Admin() {
