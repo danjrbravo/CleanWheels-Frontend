@@ -1,6 +1,6 @@
 import Sidebar from "./components/sidebar/Sidebar.jsx"
 import Reservas from "../dashboard/components/reservas/Reservas.jsx"
-//import Vehiculos from "./components/vehiculos/vehiculos.jsx"
+import Vehiculos from "./components/vehiculos/vehiculos.jsx"
 import Reportes from "./components/reportes/Reportes.jsx"
 import Feedback from "./components/feedback/Feedback.jsx"
 import Servicios from "./components/servicios/Servicios.jsx"
@@ -12,7 +12,7 @@ import "./Admin.css"
 
 const PAGES = {
   reservas: <Reservas />,
-  // vehiculos: <Vehiculos />,
+  Historial: <Vehiculos />,
   reportes: <Reportes />,
   feedback: <Feedback />,
   servicios: <Servicios />,

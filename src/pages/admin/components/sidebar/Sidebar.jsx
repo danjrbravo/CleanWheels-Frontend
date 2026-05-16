@@ -68,7 +68,7 @@ const ServicesIcon = () => (
 
 const NAV_ITEMS = [
   { id: "reservas", label: "Reservas", Icon: CalendarIcon },
-  { id: "vehiculos", label: "Vehículos", Icon: TruckIcon },
+  { id: "Historial", label: "Historial", Icon: TruckIcon },
   { id: "reportes", label: "Ingresos", Icon: ChartIcon },
   { id: "feedback", label: "Reseñas", Icon: StarIcon },
   { id: "reservasActuales", label: "Reservas Actuales", Icon: CalendarIcon }
