@@ -1,4 +1,4 @@
-/* ── Backdrop ── */
+
 .modal-backdrop {
   position: fixed;
   inset: 0;
@@ -10,7 +10,7 @@
   padding: 16px;
 }
 
-/* ── Box ── */
+
 .modal-box {
   background: #ffffff;
   border-radius: 14px;
@@ -28,7 +28,7 @@
   to   { opacity: 1; transform: scale(1)    translateY(0);   }
 }
 
-/* ── Header ── */
+
 .modal-header {
   display: flex;
   align-items: center;
@@ -87,7 +87,6 @@
   color: #0891b2;
 }
 
-/* ── Body ── */
 .modal-body {
   flex: 1;
   overflow-y: auto;
@@ -97,7 +96,6 @@
   gap: 20px;
 }
 
-/* ── Category ── */
 .modal-category-title {
   display: flex;
   align-items: center;
@@ -119,14 +117,12 @@
   border-radius: 20px;
 }
 
-/* ── Grid ── */
 .modal-services-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 10px;
 }
 
-/* ── Service card ── */
 .service-card {
   background: #ffffff;
   border: 1px solid #e5e7eb;
@@ -173,6 +169,7 @@
   line-height: 1.4;
   display: -webkit-box;
   -webkit-line-clamp: 3;
+  line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
@@ -190,7 +187,6 @@
   color: #9ca3af;
 }
 
-/* ── Footer ── */
 .modal-footer {
   padding: 14px 20px;
   border-top: 1px solid #e5e7eb;
@@ -226,7 +222,6 @@
   color: #111827;
 }
 
-/* ── Botón ── */
 .btn-modal-agendar {
   padding: 9px 48px;
   border-radius: 8px;
