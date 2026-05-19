@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from "react";
+import { createPortal } from "react-dom";
 import "./ModalAgregarVehiculo.css";
 
 const getAuthToken = () => localStorage.getItem("token");
@@ -126,7 +127,7 @@ export default function ModalAgregarVehiculo({ isOpen, onClose, onSuccess }) {
 
   if (!isOpen) return null;
 
-  return (
+  return createPortal(
     <div className="modal-overlay" onClick={handleClose}>
       <div className="modal-container" onClick={e => e.stopPropagation()}>
 
@@ -224,6 +225,7 @@ export default function ModalAgregarVehiculo({ isOpen, onClose, onSuccess }) {
         </form>
 
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }
