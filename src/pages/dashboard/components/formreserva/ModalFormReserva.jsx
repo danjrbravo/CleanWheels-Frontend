@@ -64,6 +64,26 @@ function formatPrice(price) {
   }).format(Number(price));
 }
 
+// Función para obtener el rol del usuario desde el token
+function getUserRoleFromToken(token) {
+  try {
+    const payload = JSON.parse(atob(token.split(".")[1]));
+    return payload.rol || payload.role || null;
+  } catch {
+    return null;
+  }
+}
+
+// Función para obtener el userId del token
+function getUserIdFromToken(token) {
+  try {
+    const payload = JSON.parse(atob(token.split(".")[1]));
+    return payload.sub || payload.id || payload.user_id || null;
+  } catch {
+    return null;
+  }
+}
+
 export default function ModalFormReserva({
   servicios,
   tipoVehiculo = "carro",
@@ -86,6 +106,7 @@ export default function ModalFormReserva({
   const [vehiculoId, setVehiculoId] = useState("");
   const [fechaSel, setFechaSel] = useState(tieneHorarioFijo ? timeSelected.date : null);
   const [horaSel, setHoraSel] = useState(tieneHorarioFijo ? timeSelected.hour : null);
+  const [userRole, setUserRole] = useState(null);
 
   const [submitting, setSubmitting] = useState(false);
   const [errorPost, setErrorPost] = useState(null);
@@ -106,12 +127,21 @@ export default function ModalFormReserva({
     }
 
     try {
-      const payload = JSON.parse(atob(token.split(".")[1]));
-      const userId = payload.sub;
+      const role = getUserRoleFromToken(token);
+      setUserRole(role);
 
-      if (!userId) throw new Error("No se encontró ID de usuario en el token");
+      let url;
+      if (role === "ADMIN") {
+        // ADMIN: Obtener todos los vehículos
+        url = "http://localhost:8080/api/booking/vehicles";
+      } else {
+        // CLIENT: Obtener solo los vehículos del usuario
+        const userId = getUserIdFromToken(token);
+        if (!userId) throw new Error("No se encontró ID de usuario en el token");
+        url = `http://localhost:8080/api/booking/vehicles/${userId}`;
+      }
 
-      fetch(`http://localhost:8080/api/booking/vehicles/${userId}`, {
+      fetch(url, {
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
@@ -135,8 +165,8 @@ export default function ModalFormReserva({
         })
         .catch(err => setErrorVehiculos(err.message))
         .finally(() => setLoadingVehiculos(false));
-    } catch {
-      setErrorVehiculos("Error al procesar el token");
+    } catch (err) {
+      setErrorVehiculos(err.message);
       setLoadingVehiculos(false);
     }
   };

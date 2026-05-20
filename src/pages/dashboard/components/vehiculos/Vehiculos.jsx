@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import "./Vehiculos.css";
 import ModalAgregarVehiculo from "./ModalAgregarVehiculo";
 import ModalServicios from "../servicios/ModalServicios";
@@ -129,6 +129,14 @@ function ReservasTab() {
     <>
       {/* Header con búsqueda y botón Agendar */}
       <div className="vehiculos-tab-header">
+        <input
+          className="vehiculos-search"
+          type="text"
+          placeholder="Buscar reserva..."
+          value={search}
+          onChange={handleSearch}
+          style={{ marginBottom: 0 }}
+        />
         <button className="btn-agendar-reserva" onClick={() => handleOpenServices(null)}>
           + Agendar reserva
         </button>
@@ -186,8 +194,8 @@ function ReservasTab() {
               </tr>
             ) : (
               paginated.map(r => (
-                <>
-                  <tr key={r.id}>
+                <React.Fragment key={r.id}>
+                  <tr>
                     <td>
                       <span className="vehiculo-placa">{r.placa}</span>
                       <span className="vehiculo-sub">{r.marca} {r.modelo}</span>
@@ -222,7 +230,7 @@ function ReservasTab() {
                       </td>
                     </tr>
                   )}
-                </>
+                </React.Fragment>
               ))
             )}
           </tbody>

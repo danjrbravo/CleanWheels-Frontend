@@ -44,6 +44,7 @@ function ServicesCell({ services }) {
 
 function ReservationRow({ r }) {
   const st = getStatus(r.status);
+
   return (
     <tr>
       <td>
@@ -65,12 +66,12 @@ function ReservationRow({ r }) {
 
 export default function Vehiculos() {
   const [search, setSearch]             = useState("");
-  const [reservations, setReservations] = useState([]);
-  const [loading, setLoading]           = useState(false);
-  const [error, setError]               = useState(null);
-  const [searched, setSearched]         = useState(false);
-  const [activeTab, setActiveTab]       = useState("Todos");
-  const [currentPlate, setCurrentPlate] = useState("");
+  const [reservations, setReservations]   = useState([]);
+  const [loading, setLoading]             = useState(false);
+  const [error, setError]                 = useState(null);
+  const [searched, setSearched]           = useState(false);
+  const [activeTab, setActiveTab]         = useState("Todos");
+  const [currentPlate, setCurrentPlate]   = useState("");
 
   const fetchReservations = async (plate) => {
     setLoading(true);
@@ -82,6 +83,7 @@ export default function Vehiculos() {
       if (!res.ok) throw new Error(`Error ${res.status}: ${res.statusText}`);
       const json = await res.json();
       if (!json.success) throw new Error(json.message ?? "Error al obtener reservas");
+      
       setReservations(json.data ?? []);
       setCurrentPlate(plate);
       setSearched(true);
@@ -112,15 +114,15 @@ export default function Vehiculos() {
   };
 
   const count = (s) =>
-    reservations.filter((r) => r.status.toLowerCase() === s.toLowerCase()).length;
+    reservations.filter((r) => r.status?.toLowerCase() === s.toLowerCase()).length;
 
   const displayed = reservations.filter((r) =>
-    activeTab === "Todos" ? true : r.status.toLowerCase() === activeTab.toLowerCase()
+    activeTab === "Todos" ? true : r.status?.toLowerCase() === activeTab.toLowerCase()
   );
 
   return (
     <div className="vehiculos">
-      <h1 className="vehiculos_titulo">Mis Vehículos</h1>
+      <h1 className="vehiculos_titulo">Reservas por Vehículo</h1>
 
       <form className="vehiculos_search" onSubmit={handleSearch}>
         <input
@@ -207,7 +209,9 @@ export default function Vehiculos() {
                     </td>
                   </tr>
                 ) : (
-                  displayed.map((r) => <ReservationRow key={r.id} r={r} />)
+                  displayed.map((r) => (
+                    <ReservationRow key={r.id} r={r} />
+                  ))
                 )}
               </tbody>
             </table>
