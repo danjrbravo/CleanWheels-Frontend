@@ -475,7 +475,6 @@ body.dark .btn-modal-agendar.disabled {
 
   .service-card-desc {
     font-size: 10px;
-    -webkit-line-clamp: 2;
   }
 
   .service-card-price {
@@ -571,7 +570,6 @@ body.dark .btn-modal-agendar.disabled {
   .service-card-desc {
     font-size: 10px;
     margin-bottom: 4px;
-    -webkit-line-clamp: 2;
   }
 
   .service-card-price {
