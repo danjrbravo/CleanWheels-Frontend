@@ -1,8 +1,12 @@
 import { useState, useEffect } from "react";
 import "./ModalServicios.css";
+import ModalFormReserva from "../formreserva/ModalFormReserva";
 
 // Categorías que permiten selección múltiple — ajusta según tu backend
 const CATEGORIAS_MULTIPLES = new Set(["Lavado Interior"]);
+
+// Regex de palabra completa "moto" — no coincide con "motor", "motorola", etc.
+const ES_MOTO = /\bmoto\b/i;
 
 function formatPrice(price) {
   return new Intl.NumberFormat("es-CO", {
@@ -17,6 +21,8 @@ export default function ModalServicios({ onClose, onAgendar, timeSelected = null
   const [loading, setLoading]     = useState(true);
   const [error, setError]         = useState(null);
   const [seleccionados, setSeleccionados] = useState({});
+  const [tipoVehiculo, setTipoVehiculo]   = useState("carro"); // "carro" | "moto"
+  const [paso, setPaso]                   = useState("servicios"); // "servicios" | "reserva"
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -39,13 +45,24 @@ export default function ModalServicios({ onClose, onAgendar, timeSelected = null
       .finally(() => setLoading(false));
   }, []);
 
+  // Filtrar servicios según el tipo de vehículo seleccionado
+  const serviciosFiltrados = servicios.filter(s => {
+    const esMoto = ES_MOTO.test(s.name) || ES_MOTO.test(s.category_name || "");
+    return tipoVehiculo === "moto" ? esMoto : !esMoto;
+  });
+
   // Agrupar dinámicamente por category_name
-  const categorias = servicios.reduce((acc, svc) => {
+  const categorias = serviciosFiltrados.reduce((acc, svc) => {
     const cat = svc.category_name || "Otros";
     if (!acc[cat]) acc[cat] = [];
     acc[cat].push(svc);
     return acc;
   }, {});
+
+  const handleTipoVehiculo = (tipo) => {
+    setTipoVehiculo(tipo);
+    setSeleccionados({});
+  };
 
   const toggleServicio = (svc) => {
     const esMultiple = CATEGORIAS_MULTIPLES.has(svc.category_name);
@@ -57,8 +74,7 @@ export default function ModalServicios({ onClose, onAgendar, timeSelected = null
         delete next[svc.id];
       } else {
         if (!esMultiple) {
-          // quitar el seleccionado de la misma categoría
-          servicios
+          serviciosFiltrados
             .filter(s => s.category_name === svc.category_name)
             .forEach(s => delete next[s.id]);
         }
@@ -74,16 +90,31 @@ export default function ModalServicios({ onClose, onAgendar, timeSelected = null
   };
 
   const handleAgendar = () => {
-    if (!selArray.length) {
-      return;
-    }
-
-    onAgendar(selArray, timeSelected);
+    if (!selArray.length) return;
+    setPaso("reserva");
   };
 
   const selArray = Object.values(seleccionados);
   const total    = selArray.reduce((acc, s) => acc + parseFloat(s.price), 0);
   const duracion = selArray.reduce((acc, s) => acc + s.duration, 0);
+
+  // Si estamos en el paso de reserva, renderizar ModalFormReserva
+  // pasándole tipoVehiculo directamente — sin pasar por el padre
+  if (paso === "reserva") {
+    return (
+      <ModalFormReserva
+        servicios={selArray}
+        tipoVehiculo={tipoVehiculo}
+        timeSelected={timeSelected}
+        onClose={onClose}
+        onVolver={() => setPaso("servicios")}
+        onConfirmada={(data) => {
+          onAgendar?.(selArray, timeSelected, data);
+          onClose();
+        }}
+      />
+    );
+  }
 
   return (
     <div className="modal-backdrop" onClick={handleBackdrop}>
@@ -92,6 +123,24 @@ export default function ModalServicios({ onClose, onAgendar, timeSelected = null
         <div className="modal-header">
           <h2 className="modal-title">AGENDAR SERVICIOS</h2>
           <button className="modal-close" onClick={onClose} aria-label="Cerrar">✕</button>
+        </div>
+
+        {/* ── Toggle Carro / Moto ── */}
+        <div className="modal-tipo-selector">
+          <button
+            className={`modal-tipo-btn ${tipoVehiculo === "carro" ? "active" : ""}`}
+            onClick={() => handleTipoVehiculo("carro")}
+          >
+            <span className="modal-tipo-icon">🚗</span>
+            Carro
+          </button>
+          <button
+            className={`modal-tipo-btn ${tipoVehiculo === "moto" ? "active" : ""}`}
+            onClick={() => handleTipoVehiculo("moto")}
+          >
+            <span className="modal-tipo-icon">🏍️</span>
+            Moto
+          </button>
         </div>
 
         {timeSelected && (
@@ -107,7 +156,7 @@ export default function ModalServicios({ onClose, onAgendar, timeSelected = null
           {error   && <p className="modal-loading">Error: {error}</p>}
 
           {!loading && !error && Object.entries(categorias).map(([catName, items]) => {
-            const esMultiple          = CATEGORIAS_MULTIPLES.has(catName);
+            const esMultiple           = CATEGORIAS_MULTIPLES.has(catName);
             const haySeleccionadaEnCat = items.some(s => seleccionados[s.id]);
 
             return (

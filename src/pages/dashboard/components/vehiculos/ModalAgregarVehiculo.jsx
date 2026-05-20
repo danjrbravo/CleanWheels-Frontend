@@ -18,19 +18,39 @@ const getUserIdFromToken = () => {
 
 const API_BASE = "http://localhost:8080/api/booking";
 
-const MARCAS_POPULARES = [
+const MARCAS_CARROS = [
   "Chevrolet", "Renault", "Mazda", "Kia", "Toyota",
   "Hyundai", "Nissan", "Ford", "Volkswagen", "Honda",
   "Suzuki", "Mitsubishi", "Jeep", "BMW", "Mercedes-Benz",
   "Audi", "Peugeot", "Fiat", "Subaru", "Tesla",
 ];
 
+const MARCAS_MOTOS = [
+  "Honda", "Yamaha", "Suzuki", "Kawasaki", "AKT",
+  "TVS", "Hero", "Bajaj", "Royal Enfield", "KTM",
+  "Ducati", "BMW", "Harley-Davidson", "Benelli", "CF Moto",
+  "Bera", "Auteco", "UM", "Italika", "Piaggio",
+];
+
+// Validadores de placa
+// Carro: ABC123 (3 letras + 3 números)
+// Moto:  ABC12D (3 letras + 2 números + 1 letra)
+function isPlacaCarroValida(placa) {
+  return /^[A-Z]{3}[0-9]{3}$/.test(placa);
+}
+function isPlacaMotoValida(placa) {
+  return /^[A-Z]{3}[0-9]{2}[A-Z0-9]$/.test(placa);
+}
+
 export default function ModalAgregarVehiculo({ isOpen, onClose, onSuccess }) {
+  const [tipo, setTipo]             = useState("carro"); // "carro" | "moto"
   const [formData, setFormData]     = useState({ placa: "", marca: "", modelo: "" });
   const [loading, setLoading]       = useState(false);
   const [error, setError]           = useState("");
   const [marcaOpen, setMarcaOpen]   = useState(false);
   const marcaRef                    = useRef(null);
+
+  const MARCAS = tipo === "carro" ? MARCAS_CARROS : MARCAS_MOTOS;
 
   // Cerrar dropdown al hacer click fuera
   useEffect(() => {
@@ -43,8 +63,19 @@ export default function ModalAgregarVehiculo({ isOpen, onClose, onSuccess }) {
     return () => document.removeEventListener("mousedown", handler);
   }, []);
 
-  const resetForm = () => { setFormData({ placa: "", marca: "", modelo: "" }); setError(""); };
+  const resetForm = () => {
+    setFormData({ placa: "", marca: "", modelo: "" });
+    setError("");
+    setMarcaOpen(false);
+  };
+
   const handleClose = () => { resetForm(); onClose(); };
+
+  // Cambio de tipo: resetear form
+  const handleTipoChange = (nuevoTipo) => {
+    setTipo(nuevoTipo);
+    resetForm();
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -52,44 +83,62 @@ export default function ModalAgregarVehiculo({ isOpen, onClose, onSuccess }) {
     if (error) setError("");
   };
 
-  // Placa: exactamente 3 letras seguidas de 3 números (ej: ABC123)
+  // Lógica de placa:
+  // Carro: [A-Z]{3}[0-9]{3}   → pos 0-2 letras, pos 3-5 números
+  // Moto:  [A-Z]{3}[0-9]{2}[A-Z] → pos 0-2 letras, pos 3-4 números, pos 5 letra
   const handlePlacaChange = (e) => {
     const raw = e.target.value.toUpperCase();
 
-    // Separar lo que ya hay en el estado actual
-    const currentLetters = formData.placa.slice(0, 3);
-    const currentDigits  = formData.placa.slice(3);
-
-    // Si el nuevo valor es más corto (el usuario borró), recortar normalmente
+    // Borrado: simplemente recortar
     if (raw.length <= formData.placa.length) {
       setFormData(prev => ({ ...prev, placa: raw.slice(0, 6) }));
       if (error) setError("");
       return;
     }
 
-    // Caracter nuevo que se está agregando
+    const pos     = formData.placa.length; // posición del nuevo carácter
     const newChar = raw[raw.length - 1];
 
-    if (currentLetters.length < 3) {
-      // Posición de letras: solo aceptar A-Z
-      if (/[A-Z]/.test(newChar)) {
-        setFormData(prev => ({ ...prev, placa: currentLetters + newChar + currentDigits }));
-      }
+    let accepted = false;
+
+    if (tipo === "carro") {
+      // pos 0-2: letras, pos 3-5: números
+      if (pos < 3 && /[A-Z]/.test(newChar)) accepted = true;
+      if (pos >= 3 && pos < 6 && /[0-9]/.test(newChar)) accepted = true;
     } else {
-      // Posición de números: solo aceptar 0-9
-      if (/[0-9]/.test(newChar) && currentDigits.length < 3) {
-        setFormData(prev => ({ ...prev, placa: currentLetters + currentDigits + newChar }));
-      }
+      // moto: pos 0-2: letras, pos 3-4: números, pos 5: letra o número
+      if (pos < 3 && /[A-Z]/.test(newChar)) accepted = true;
+      if (pos >= 3 && pos < 5 && /[0-9]/.test(newChar)) accepted = true;
+      if (pos === 5 && /[A-Z0-9]/.test(newChar)) accepted = true;
+    }
+
+    if (accepted) {
+      setFormData(prev => ({ ...prev, placa: prev.placa + newChar }));
     }
 
     if (error) setError("");
   };
 
+  const getPlacaHint = () => {
+    if (tipo === "carro") return `3 letras + 3 números · Ej: ABC123 · ${formData.placa.length}/6`;
+    return `3 letras + 2 números + letra o número · Ej: ABC12D / ABC123 · ${formData.placa.length}/6`;
+  };
+
+  const getPlacaPlaceholder = () => tipo === "carro" ? "Ej: ABC123" : "Ej: ABC12D o ABC123";
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!formData.placa.trim())  { setError("La placa es requerida"); return; }
-    if (!/^[A-Z]{3}[0-9]{3}$/.test(formData.placa)) { setError("La placa debe tener el formato ABC123 (3 letras y 3 números)"); return; }
+    if (!formData.placa.trim()) { setError("La placa es requerida"); return; }
+
+    if (tipo === "carro" && !isPlacaCarroValida(formData.placa)) {
+      setError("La placa de carro debe tener el formato ABC123 (3 letras y 3 números)");
+      return;
+    }
+    if (tipo === "moto" && !isPlacaMotoValida(formData.placa)) {
+      setError("La placa de moto debe tener el formato ABC12D (3 letras, 2 números y 1 letra)");
+      return;
+    }
     if (!formData.marca.trim())  { setError("La marca es requerida"); return; }
     if (!formData.modelo.trim()) { setError("El modelo es requerido"); return; }
 
@@ -108,6 +157,7 @@ export default function ModalAgregarVehiculo({ isOpen, onClose, onSuccess }) {
           placa:  formData.placa.toUpperCase().trim(),
           marca:  formData.marca.trim(),
           modelo: formData.modelo.trim(),
+          tipo,   // "carro" | "moto"
         }),
       });
 
@@ -140,6 +190,29 @@ export default function ModalAgregarVehiculo({ isOpen, onClose, onSuccess }) {
           <div className="modal-body">
             {error && <div className="modal-error">{error}</div>}
 
+            {/* Selector de tipo */}
+            <div className="form-group">
+              <label>Tipo de vehículo</label>
+              <div className="tipo-selector">
+                <button
+                  type="button"
+                  className={`tipo-btn ${tipo === "carro" ? "active" : ""}`}
+                  onClick={() => handleTipoChange("carro")}
+                >
+                  <span className="tipo-icon">🚗</span>
+                  <span>Carro</span>
+                </button>
+                <button
+                  type="button"
+                  className={`tipo-btn ${tipo === "moto" ? "active" : ""}`}
+                  onClick={() => handleTipoChange("moto")}
+                >
+                  <span className="tipo-icon">🏍️</span>
+                  <span>Moto</span>
+                </button>
+              </div>
+            </div>
+
             {/* Placa */}
             <div className="form-group">
               <label htmlFor="placa">
@@ -151,16 +224,14 @@ export default function ModalAgregarVehiculo({ isOpen, onClose, onSuccess }) {
                 name="placa"
                 value={formData.placa}
                 onChange={handlePlacaChange}
-                placeholder="Ej: ABC123"
+                placeholder={getPlacaPlaceholder()}
                 autoComplete="off"
                 className={error && error.toLowerCase().includes("placa") ? "error-input" : ""}
               />
-              <small className="input-hint">
-                3 letras + 3 números · {formData.placa.length}/6
-              </small>
+              <small className="input-hint">{getPlacaHint()}</small>
             </div>
 
-            {/* Marca — dropdown custom (siempre abre hacia abajo) */}
+            {/* Marca */}
             <div className="form-group">
               <label>Marca <span className="required">*</span></label>
               <div
@@ -181,7 +252,7 @@ export default function ModalAgregarVehiculo({ isOpen, onClose, onSuccess }) {
                 </button>
                 {marcaOpen && (
                   <ul className="marca-list">
-                    {MARCAS_POPULARES.map(m => (
+                    {MARCAS.map(m => (
                       <li
                         key={m}
                         className={`marca-option${formData.marca === m ? " selected" : ""}`}
@@ -210,7 +281,11 @@ export default function ModalAgregarVehiculo({ isOpen, onClose, onSuccess }) {
                 name="modelo"
                 value={formData.modelo}
                 onChange={handleChange}
-                placeholder="Ej: Corolla 2020, Civic, Model X"
+                placeholder={
+                  tipo === "carro"
+                    ? "Ej: Corolla 2020, Civic, Spark"
+                    : "Ej: CB 190R, FZ25, Pulsar NS200"
+                }
                 autoComplete="off"
               />
             </div>
@@ -219,7 +294,7 @@ export default function ModalAgregarVehiculo({ isOpen, onClose, onSuccess }) {
           <div className="modal-footer">
             <button type="button" className="btn-cancel" onClick={handleClose}>Cancelar</button>
             <button type="submit" className="btn-submit" disabled={loading}>
-              {loading ? "Registrando..." : "Registrar Vehículo"}
+              {loading ? "Registrando..." : `Registrar ${tipo === "carro" ? "Carro" : "Moto"}`}
             </button>
           </div>
         </form>

@@ -5,6 +5,44 @@ import ModalAgregarVehiculo from "../vehiculos/ModalAgregarVehiculo";
 const DIAS  = ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"];
 const MESES = ["Ene","Feb","Mar","Abr","May","Jun","Jul","Ago","Sep","Oct","Nov","Dic"];
 
+const MARCAS_CARROS = new Set([
+  "Chevrolet", "Renault", "Mazda", "Kia", "Toyota",
+  "Hyundai", "Nissan", "Ford", "Volkswagen", "Honda",
+  "Suzuki", "Mitsubishi", "Jeep", "BMW", "Mercedes-Benz",
+  "Audi", "Peugeot", "Fiat", "Subaru", "Tesla",
+]);
+
+const MARCAS_MOTOS = new Set([
+  "Honda", "Yamaha", "Suzuki", "Kawasaki", "AKT",
+  "TVS", "Hero", "Bajaj", "Royal Enfield", "KTM",
+  "Ducati", "BMW", "Harley-Davidson", "Benelli", "CF Moto",
+  "Bera", "Auteco", "UM", "Italika", "Piaggio",
+]);
+
+function esMarcaMoto(marca) {
+  return MARCAS_MOTOS.has(marca) && !MARCAS_CARROS.has(marca);
+}
+
+function esMarcaCarro(marca) {
+  return MARCAS_CARROS.has(marca) && !MARCAS_MOTOS.has(marca);
+}
+
+function esMarcaAmbigua(marca) {
+  // Honda, Suzuki, BMW aparecen en ambas listas
+  return MARCAS_CARROS.has(marca) && MARCAS_MOTOS.has(marca);
+}
+
+function vehiculoMatchTipo(vehiculo, tipoVehiculo) {
+  const marca = vehiculo.marca;
+  if (esMarcaAmbigua(marca)) {
+    // Para marcas ambiguas (Honda, Suzuki, BMW) no podemos saber con certeza;
+    // los mostramos en ambos tipos para no perder vehículos del usuario.
+    return true;
+  }
+  if (tipoVehiculo === "moto") return MARCAS_MOTOS.has(marca);
+  return MARCAS_CARROS.has(marca);
+}
+
 function formatDateInputValue(date) {
   const year = date.getFullYear();
   const month = String(date.getMonth() + 1).padStart(2, "0");
@@ -45,13 +83,8 @@ function isSlotInThePast(dateStr, hour) {
   const currentDate = formatDateInputValue(today);
   const selectedDateValue = formatDateInputValue(selectedDate);
 
-  if (selectedDateValue < currentDate) {
-    return true;
-  }
-
-  if (selectedDateValue > currentDate) {
-    return false;
-  }
+  if (selectedDateValue < currentDate) return true;
+  if (selectedDateValue > currentDate) return false;
 
   return parseHourValue(hour) < today.getHours() * 60 + today.getMinutes();
 }
@@ -64,7 +97,7 @@ function formatPrice(price) {
   }).format(Number(price));
 }
 
-export default function ModalFormReserva({ servicios, onClose, onConfirmada, onVolver, timeSelected = null }) {
+export default function ModalFormReserva({ servicios, tipoVehiculo = "carro", onClose, onConfirmada, onVolver, timeSelected = null }) {
   const hoy = formatDateInputValue(new Date());
   const tieneHorarioFijo = Boolean(timeSelected?.date && timeSelected?.hour);
 
@@ -80,8 +113,9 @@ export default function ModalFormReserva({ servicios, onClose, onConfirmada, onV
   const [fechaSel, setFechaSel]     = useState(tieneHorarioFijo ? timeSelected.date : null);
   const [horaSel, setHoraSel]       = useState(tieneHorarioFijo ? timeSelected.hour : null);
 
-  const [submitting, setSubmitting] = useState(false);
-  const [errorPost, setErrorPost]   = useState(null);
+  const [submitting, setSubmitting]     = useState(false);
+  const [errorPost, setErrorPost]       = useState(null);
+  const [validacionMsg, setValidacionMsg] = useState(null);
 
   const [modalVehiculoOpen, setModalVehiculoOpen] = useState(false);
 
@@ -109,7 +143,10 @@ export default function ModalFormReserva({ servicios, onClose, onConfirmada, onV
         .then(json => {
           if (!json.success) throw new Error(json.message || "Error al cargar vehículos");
           setVehiculos(json.data);
-          if (json.data.length === 1) setVehiculoId(json.data[0].id);
+          // Auto-seleccionar si solo hay uno del tipo correcto
+          const filtrados = json.data.filter(v => vehiculoMatchTipo(v, tipoVehiculo));
+          if (filtrados.length === 1) setVehiculoId(filtrados[0].id);
+          else setVehiculoId("");
         })
         .catch(err => setErrorVehiculos(err.message))
         .finally(() => setLoadingVehiculos(false));
@@ -120,6 +157,13 @@ export default function ModalFormReserva({ servicios, onClose, onConfirmada, onV
   };
 
   useEffect(() => { fetchVehiculos(); }, []);
+
+  // Resetear selección de vehículo si cambia el tipo
+  useEffect(() => {
+    setVehiculoId("");
+    const filtrados = vehiculos.filter(v => vehiculoMatchTipo(v, tipoVehiculo));
+    if (filtrados.length === 1) setVehiculoId(filtrados[0].id);
+  }, [tipoVehiculo, vehiculos]);
 
   // ── Fetch calendario ─────────────────────────────────────────
   useEffect(() => {
@@ -164,7 +208,14 @@ export default function ModalFormReserva({ servicios, onClose, onConfirmada, onV
   const semanaAnteriorDeshabilitada = weekStart <= getWeekStart(hoy);
 
   const handleConfirmar = async () => {
-    if (!vehiculoId || !fechaSel || !horaSel) return;
+    if (!vehiculoId || !fechaSel || !horaSel) {
+      const partes = [];
+      if (!vehiculoId) partes.push("un vehículo");
+      if (!fechaSel || !horaSel) partes.push("un horario");
+      setValidacionMsg(`Selecciona ${partes.join(" y ")} para continuar.`);
+      return;
+    }
+    setValidacionMsg(null);
     setSubmitting(true);
     setErrorPost(null);
 
@@ -186,7 +237,7 @@ export default function ModalFormReserva({ servicios, onClose, onConfirmada, onV
       });
       const json = await r.json();
       console.log(json);
-      if(json.error && json.error.includes("(hora Colombia) no está disponible. Los 3 cupos están ocupados durante ese período.")) {
+      if (json.error && json.error.includes("(hora Colombia) no está disponible. Los 3 cupos están ocupados durante ese período.")) {
         throw new Error("Los servicios seleccionados alcanzan a tomar tiempo de un horario que ya está lleno. Por favor, elige otro horario o reduce la duración total de los servicios.");
       }
 
@@ -208,6 +259,10 @@ export default function ModalFormReserva({ servicios, onClose, onConfirmada, onV
   };
 
   const handleBackdrop = (e) => { if (e.target === e.currentTarget) onClose(); };
+
+  // Vehículos filtrados por tipo
+  const vehiculosFiltrados = vehiculos.filter(v => vehiculoMatchTipo(v, tipoVehiculo));
+  const tipoLabel = tipoVehiculo === "moto" ? "moto" : "carro";
 
   const slotsDia = fechaSel ? (calendario?.days.find(d => d.date === fechaSel)?.slots ?? []) : [];
   const total    = servicios.reduce((acc, s) => acc + parseFloat(s.price), 0);
@@ -257,32 +312,37 @@ export default function ModalFormReserva({ servicios, onClose, onConfirmada, onV
 
             {/* Vehículo */}
             <section className="mfr-section">
-              <label className="mfr-label" htmlFor="vehiculo">Vehículo</label>
+              <label className="mfr-label" htmlFor="vehiculo">
+                Vehículo
+                <span className="mfr-tipo-badge mfr-tipo-badge--{tipoVehiculo}">
+                  {tipoVehiculo === "moto" ? "🏍️ Moto" : "🚗 Carro"}
+                </span>
+              </label>
               {loadingVehiculos && <p className="mfr-hint">Cargando vehículos...</p>}
               {errorVehiculos && <p className="mfr-error">{errorVehiculos}</p>}
 
-              {!loadingVehiculos && !errorVehiculos && vehiculos.length === 0 && (
+              {!loadingVehiculos && !errorVehiculos && vehiculosFiltrados.length === 0 && (
                 <div className="mfr-no-vehiculos">
-                  <p className="mfr-hint">No tienes vehículos registrados.</p>
+                  <p className="mfr-hint">No tienes {tipoLabel}s registrados.</p>
                   <button
                     type="button"
                     className="mfr-btn-agregar-vehiculo"
                     onClick={() => setModalVehiculoOpen(true)}
                   >
-                    + Agregar vehículo
+                    + Agregar {tipoLabel}
                   </button>
                 </div>
               )}
 
-              {!loadingVehiculos && !errorVehiculos && vehiculos.length > 0 && (
+              {!loadingVehiculos && !errorVehiculos && vehiculosFiltrados.length > 0 && (
                 <select
                   id="vehiculo"
                   className="mfr-select"
                   value={vehiculoId}
                   onChange={e => setVehiculoId(e.target.value)}
                 >
-                  <option value="" disabled>Selecciona un vehículo</option>
-                  {vehiculos.map(v => (
+                  <option value="" disabled>Selecciona un {tipoLabel}</option>
+                  {vehiculosFiltrados.map(v => (
                     <option key={v.id} value={v.id}>
                       {v.placa} — {v.marca} {v.modelo}
                     </option>
@@ -363,9 +423,15 @@ export default function ModalFormReserva({ servicios, onClose, onConfirmada, onV
 
           {/* Footer */}
           <div className="mfr-footer">
+            {validacionMsg && (
+              <div className="mfr-validacion-alert">
+                <span className="mfr-validacion-icon">⚠️</span>
+                {validacionMsg}
+              </div>
+            )}
             <button
-              className={`mfr-btn-confirmar ${listo ? "enabled" : "disabled"}`}
-              disabled={!listo || submitting}
+              className="mfr-btn-confirmar enabled"
+              disabled={submitting}
               onClick={handleConfirmar}
             >
               {submitting ? "Confirmando..." : "Confirmar Reserva"}
