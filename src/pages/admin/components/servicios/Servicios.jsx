@@ -276,12 +276,15 @@ export default function Servicios() {
       {mostrarFormulario && (
         <div className="servicios_formulario">
           <h2>{editandoId ? 'Editar Servicio' : 'Nuevo Servicio'}</h2>
-          <div className="formulario_grid">
+          
+          {/* Primera fila: Nombre y Precio */}
+          <div className="formulario_fila">
             <input 
               name="name" 
               placeholder="Nombre (máx. 150 caracteres)" 
               value={formulario.name} 
               onChange={handleChange} 
+              className="formulario_input"
             />
             <input 
               name="price" 
@@ -290,19 +293,19 @@ export default function Servicios() {
               step="0.01"
               value={formulario.price} 
               onChange={handleChange} 
+              className="formulario_input"
             />
+          </div>
+
+          {/* Segunda fila: Duración y Categoría */}
+          <div className="formulario_fila">
             <input 
               name="duration" 
               placeholder="Duración en minutos (máx. 1440)" 
               type="number" 
               value={formulario.duration} 
               onChange={handleChange} 
-            />
-            <input 
-              name="description" 
-              placeholder="Descripción (máx. 500 caracteres)" 
-              value={formulario.description} 
-              onChange={handleChange} 
+              className="formulario_input"
             />
             <select 
               name="category_id" 
@@ -315,6 +318,21 @@ export default function Servicios() {
                 <option key={cat.id} value={cat.id}>{cat.name}</option>
               ))}
             </select>
+          </div>
+
+          {/* Tercera fila: Descripción (full width) */}
+          <div className="formulario_fila_full">
+            <input 
+              name="description" 
+              placeholder="Descripción (máx. 500 caracteres)" 
+              value={formulario.description} 
+              onChange={handleChange} 
+              className="formulario_input"
+            />
+          </div>
+
+          {/* Cuarta fila: Imagen (full width) */}
+          <div className="formulario_fila_full">
             <div className="formulario_image_field">
               <label style={{ marginBottom: '8px', display: 'block', fontWeight: '600' }}>
                 Imagen del servicio:
@@ -326,7 +344,9 @@ export default function Servicios() {
               />
             </div>
           </div>
+
           {error && <p className="form_error">{error}</p>}
+          
           <div className="formulario_botones">
             <button 
               className="btn_guardar" 
@@ -378,7 +398,7 @@ export default function Servicios() {
                 <span className={`badge ${s.is_active ? 'activo' : 'inactivo'}`}>
                   {s.is_active ? 'Activo' : 'Inactivo'}
                 </span>
-               </td>
+                </td>
               <td className="acciones">
                 <button 
                   className="btn_icono btn_icono_editar" 
@@ -412,8 +432,8 @@ export default function Servicios() {
                     ▶️
                   </button>
                 )}
-               </td>
-             </tr>
+              </td>
+            </tr>
           ))}
         </tbody>
       </table>
