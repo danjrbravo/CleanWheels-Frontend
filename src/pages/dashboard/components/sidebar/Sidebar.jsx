@@ -1,6 +1,6 @@
 import "./Sidebar.css";
 import { useState, useEffect } from "react";
-
+import { BACKEND_URL } from "../../../../url";
 const CalendarIcon = () => (
   <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
     stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
@@ -73,7 +73,7 @@ export default function Sidebar({ activePage, onNavigate, onLogout }) {
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-    fetch("http://localhost:8080/api/auth/me", {
+    fetch(`${BACKEND_URL}/auth/me`, {
       headers: { "Authorization": `Bearer ${token}` }
     })
       .then(res => res.json())

@@ -1,5 +1,6 @@
 import './Feedback.css'
 import { useState, useEffect } from 'react'
+import { BACKEND_URL } from '../../../../url'
 
 const Estrellas = ({ cantidad }) => (
   <div className="estrellas">
@@ -43,7 +44,7 @@ function Feedback() {
   const cargarFeedback = async (from, to) => {
     try {
       const res = await fetch(
-        `http://localhost:8080/api/admin/feedback?from=${from}&to=${to}`,
+        `${BACKEND_URL}/admin/feedback?from=${from}&to=${to}`,
         { headers: getHeaders() }
       )
 
@@ -79,7 +80,7 @@ function Feedback() {
     if (!fechaDesde || !fechaHasta) return
     if (fechaDesde > fechaHasta) return
     console.log('Fechas enviadas:', { fechaDesde, fechaHasta })
-    console.log('URL:', `/api/admin/feedback?from=${fechaDesde}&to=${fechaHasta}`)
+    console.log('URL:', `${BACKEND_URL}/admin/feedback?from=${fechaDesde}&to=${fechaHasta}`)
     cargarFeedback(fechaDesde, fechaHasta)
     setPagina(1)
   }

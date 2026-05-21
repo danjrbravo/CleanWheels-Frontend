@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import "./ModalFormReserva.css";
 import ModalAgregarVehiculo from "../vehiculos/ModalAgregarVehiculo";
+import { BACKEND_URL } from "../../../../url";
 
 const DIAS = ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"];
 const MESES = ["Ene","Feb","Mar","Abr","May","Jun","Jul","Ago","Sep","Oct","Nov","Dic"];
@@ -111,6 +112,7 @@ export default function ModalFormReserva({
   const [submitting, setSubmitting] = useState(false);
   const [errorPost, setErrorPost] = useState(null);
   const [validacionMsg, setValidacionMsg] = useState(null);
+  const [showSuccessToast, setShowSuccessToast] = useState(false);
 
   const [modalVehiculoOpen, setModalVehiculoOpen] = useState(false);
 
@@ -133,12 +135,12 @@ export default function ModalFormReserva({
       let url;
       if (role === "ADMIN") {
         // ADMIN: Obtener todos los vehículos
-        url = "http://localhost:8080/api/booking/vehicles";
+        url = `${BACKEND_URL}/booking/vehicles`;
       } else {
         // CLIENT: Obtener solo los vehículos del usuario
         const userId = getUserIdFromToken(token);
         if (!userId) throw new Error("No se encontró ID de usuario en el token");
-        url = `http://localhost:8080/api/booking/vehicles/${userId}`;
+        url = `${BACKEND_URL}/booking/vehicles/${userId}`;
       }
 
       fetch(url, {
@@ -203,7 +205,7 @@ export default function ModalFormReserva({
 
     const token = localStorage.getItem("token");
 
-    fetch(`http://localhost:8080/api/booking/reservations/calendar/week?week_start=${weekStart}`, {
+    fetch(`${BACKEND_URL}/booking/reservations/calendar/week?week_start=${weekStart}`, {
       headers: {
         Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
@@ -263,7 +265,7 @@ export default function ModalFormReserva({
     };
 
     try {
-      const r = await fetch("http://localhost:8080/api/booking/reservations/", {
+      const r = await fetch(`${BACKEND_URL}/booking/reservations/`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -291,8 +293,13 @@ export default function ModalFormReserva({
         throw new Error(json.message || json.error || `Error ${r.status}`);
       }
 
-      onConfirmada?.(json.data);
-      onClose();
+      // Mostrar toast de éxito
+      setShowSuccessToast(true);
+      
+      setTimeout(() => {
+        onConfirmada?.(); // esto ahora llama handleCerrarTodo que incrementa refreshKey
+      }, 2000);
+
     } catch (err) {
       setErrorPost(err.message || "No se pudo crear la reserva.");
     } finally {
@@ -326,6 +333,19 @@ export default function ModalFormReserva({
 
   return (
     <>
+      {/* Toast de \u00e9xito */}
+      {showSuccessToast && (
+        <div className="mfr-success-toast">
+          <div className="mfr-toast-content">
+            <span className="mfr-toast-icon">✓</span>
+            <div className="mfr-toast-text">
+              <p className="mfr-toast-title">¡Reserva Confirmada!</p>
+              <p className="mfr-toast-message">Tu reserva ha sido guardada en el sistema. Te esperamos.</p>
+            </div>
+          </div>
+        </div>
+      )}
+
       <div className="mfr-backdrop" onClick={handleBackdrop}>
         <div className="mfr-box">
 

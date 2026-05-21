@@ -4,6 +4,7 @@ import Navbar from '../../components/navbar/Navbar';
 import Footer from '../../components/footer/Footer';
 import carGenerico from '../../assets/car1.jpg';
 import './Catalog.css';
+import { BACKEND_URL } from '../../url';
 
 function Catalog() {
   const [categorias, setCategorias] = useState([]);
@@ -32,8 +33,8 @@ function Catalog() {
         const headers = { "Authorization": `Bearer ${token}` };
 
         const [resCat, resServ] = await Promise.all([
-          fetch("http://localhost:8080/api/booking/categories", { headers }),
-          fetch("http://localhost:8080/api/booking/services/", { headers })
+          fetch(`${BACKEND_URL}/booking/categories`, { headers }),
+          fetch(`${BACKEND_URL}/booking/services/`, { headers })
         ]);
 
         const dataCat = await resCat.json();

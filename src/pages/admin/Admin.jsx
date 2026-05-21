@@ -9,6 +9,7 @@ import ReservasActuales from "./components/reservasActuales/ReservasActuales.jsx
 import { useState } from "react"
 import { useNavigate } from "react-router-dom"
 import "./Admin.css"
+import { BACKEND_URL } from '../../url';
 
 const PAGES = {
   reservas: <Reservas />,
@@ -36,7 +37,7 @@ export default function Admin() {
     localStorage.removeItem("user")
 
     try {
-      const res = await fetch("http://localhost:8080/api/auth/guest", { method: "POST" })
+      const res = await fetch(`${BACKEND_URL}/auth/guest`, { method: "POST" })
       const data = await res.json()
       const token = data.token?.token || data.token
       if (token) localStorage.setItem("token", token)

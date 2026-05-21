@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './ReservasActuales.css';
+import { BACKEND_URL } from '../../../../url';
 
 export default function ReservasActuales() {
   const [reservas, setReservas] = useState([]);
@@ -20,7 +21,7 @@ export default function ReservasActuales() {
       setLoading(true);
       const token = getToken();
       const response = await fetch(
-        'http://localhost:8080/api/booking/reservations/in-progress',
+        `${BACKEND_URL}/booking/reservations/in-progress`,
         {
           method: 'GET',
           headers: {
@@ -58,7 +59,7 @@ export default function ReservasActuales() {
       setCompleting(true);
       const token = getToken();
       const response = await fetch(
-        `http://localhost:8080/api/booking/reservations/${selectedReserva.id}/complete`,
+        `${BACKEND_URL}/booking/reservations/${selectedReserva.id}/complete`,
         {
           method: 'POST',
           headers: {

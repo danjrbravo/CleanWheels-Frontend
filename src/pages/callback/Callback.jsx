@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Callback.css";
+import { BACKEND_URL } from "../../url";
 
 function Callback() {
   const [status, setStatus] = useState("loading");
@@ -22,7 +23,7 @@ function Callback() {
 
     const fetchToken = async () => {
       try {
-        const response = await fetch("http://localhost:8080/api/auth/google/callback", {
+        const response = await fetch(`${BACKEND_URL}/auth/google/callback`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ code }),

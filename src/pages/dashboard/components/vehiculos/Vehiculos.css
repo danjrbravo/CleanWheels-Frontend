@@ -698,7 +698,36 @@ body:not(.dark) .custom-modal-btn.btn-close:hover {
   to { opacity: 1; }
 }
 
-@keyframes scaleInModal {
-  from { transform: scale(0.9) translateY(10px); opacity: 0; }
-  to { transform: scale(1) translateY(0); opacity: 1; }
+/* Toast de error */
+.error-toast {
+  position: fixed;
+  bottom: 100px;
+  right: 20px;
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+  color: white;
+  padding: 16px 20px;
+  border-radius: 10px;
+  box-shadow: 0 8px 24px rgba(239, 68, 68, 0.3);
+  z-index: 2000;
+  animation: error-toast-in 0.4s ease, error-toast-out 0.4s ease 3.6s forwards;
+  max-width: 400px;
+  min-width: 300px;
 }
+
+
+.btn-reactivar-reserva{
+  padding: 6px 14px;
+  background-color: #10b981;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+.btn-reactivar-reserva:disabled {
+  background-color: #94a3b8;
+  cursor: not-allowed;
+}
+

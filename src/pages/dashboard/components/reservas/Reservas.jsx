@@ -2,6 +2,7 @@ import { useEffect, useState, useRef } from "react";
 import "./Reservas.css";
 import ModalServicios from "../servicios/ModalServicios";
 import ModalFormReserva from "../formreserva/ModalFormReserva";
+import { BACKEND_URL } from "../../../../url";
 
 function pad(value) {
   return String(value).padStart(2, "0");
@@ -84,6 +85,7 @@ export default function Reservas() {
   const [modal, setModal] = useState(null);
   const [serviciosSeleccionados, setServiciosSeleccionados] = useState([]);
   const [timeSelected, setTimeSelected] = useState(null);
+  const [refreshKey, setRefreshKey] = useState(0);
   const weekPickerInputRef = useRef(null);
 
   const weekEnd = addDaysToDateInput(weekStart, 4);
@@ -94,9 +96,11 @@ export default function Reservas() {
       setLoadingCalendar(true);
       setErrorCalendar(null);
 
+      console.log("Fetching calendar for week starting:", weekStart);
+
       const token = localStorage.getItem("token");
       const response = await fetch(
-        `http://localhost:8080/api/booking/reservations/calendar/week?week_start=${weekStart}`,
+        `${BACKEND_URL}/booking/reservations/calendar/week?week_start=${weekStart}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -104,6 +108,8 @@ export default function Reservas() {
           },
         }
       );
+
+
 
       if (!response.ok) {
         throw new Error(`Error ${response.status}`);
@@ -123,9 +129,10 @@ export default function Reservas() {
     }
   };
 
+
   useEffect(() => {
     fetchCalendar();
-  }, [weekStart]);
+  }, [weekStart, refreshKey]);
 
   const handleWeekChange = (event) => {
     setWeekStart(getMondayFromDate(event.target.value));
@@ -162,6 +169,7 @@ export default function Reservas() {
     setModal(null);
     setServiciosSeleccionados([]);
     setTimeSelected(null);
+    setRefreshKey(prev => prev + 1); // <- fuerza re-fetch del calendario
   };
 
   if (errorCalendar) {
@@ -260,12 +268,7 @@ export default function Reservas() {
           timeSelected={timeSelected}
           onClose={handleCerrarTodo}
           onVolver={() => setModal("servicios")}
-          onConfirmada={(reserva) => {
-            handleCerrarTodo();
-            // Refrescar calendario para mostrar el nuevo estado del slot
-            fetchCalendar();
-            console.log("Reserva creada:", reserva);
-          }}
+          onConfirmada={handleCerrarTodo} 
         />
       )}
     </div>

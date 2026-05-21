@@ -9,11 +9,13 @@ import Callback from './pages/callback/Callback'
 import ProtectedRoute from './components/ProtectedRoute'
 import FeedbackPage from "./pages/FeedbackPage/FeedbackPage";
 
+import { BACKEND_URL as API_BASE } from './url';
 export default function App() {
+  
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (!token) {
-      fetch("http://localhost:8080/api/auth/guest", { method: "POST" })
+      fetch(`${API_BASE}/auth/guest`, { method: "POST" })
         .then(res => res.json())
         .then(data => {
           const token = data.token?.token || data.token;

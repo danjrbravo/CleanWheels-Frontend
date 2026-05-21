@@ -4,7 +4,7 @@ import {
   BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer,
   LineChart, Line, PieChart, Pie, Cell, Legend
 } from 'recharts'
-
+import { BACKEND_URL } from '../../../../url'
 const getRangoFechas = (filtro) => {
   const hoy = new Date()
   const to = hoy.toISOString().split("T")[0]
@@ -74,7 +74,7 @@ function Reportes() {
   const fetchPeriodo = async (periodo) => {
     const { from, to } = getRangoFechas(periodo)
     const res = await fetch(
-      `http://localhost:8080/api/admin/incomes?from=${from}T00:00:00.000Z&to=${to}T23:59:59.999Z`,
+      `${BACKEND_URL}/admin/incomes?from=${from}T00:00:00.000Z&to=${to}T23:59:59.999Z`,
       { headers }
     )
     const data = await res.json()
@@ -95,7 +95,7 @@ function Reportes() {
 
     try {
       const res = await fetch(
-        `http://localhost:8080/api/admin/incomes?from=${from}T00:00:00.000Z&to=${to}T23:59:59.999Z`,
+        `${BACKEND_URL}/admin/incomes?from=${from}T00:00:00.000Z&to=${to}T23:59:59.999Z`,
         { headers }
       )
       const data = await res.json()
