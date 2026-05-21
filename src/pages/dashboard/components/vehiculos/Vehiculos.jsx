@@ -23,7 +23,7 @@ function getVehiculoIcon(tipo) {
 }
 
 const STATUS_FILTERS = ["Todos", "pendiente", "completado", "cancelado"];
-const PAGE_SIZE = 5;
+const PAGE_SIZE = 10;
 
 const STATUS_LABELS = {
   pendiente: "Pendiente",
@@ -53,7 +53,12 @@ function ReservasTab() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [search, setSearch] = useState("");
-  const [filter, setFilter] = useState("Todos");
+  const [deactivateButtonReactivar, setDeactivateButtonReactivar] = useState(false);
+
+  console.log("error", error);
+  
+ 
+  const [filter, setFilter] = useState("pendiente");
   const [page, setPage] = useState(1);
   const [expanded, setExpanded] = useState(null);
   const [actionLoading, setActionLoading] = useState({});
@@ -140,11 +145,18 @@ function ReservasTab() {
         },
       });
       const json = await res.json();
-      if (!res.ok || !json.success) throw new Error(json.message || `No se pudo procesar la acción`);
+      
+      if (!res.ok || !json.success) throw new Error(json.error || `No se pudo procesar la acción`);
 
       fetchReservas();
     } catch (err) {
-      alert(err.message);
+      setDeactivateButtonReactivar(true);
+      if(err.message.includes("No hay cupo disponible para reactivar la reserva")){
+        setError("No se pudo reactivar la reserva porque ya no hay cupo disponible en el horario seleccionado. Por favor, intenta agendarla nuevamente con otro horario.");
+        setTimeout(() => setError(null), 7000);
+      } else {
+        setError(err || "No se pudo procesar la acción");
+      }
     } finally {
       setActionLoading(prev => ({ ...prev, [reservationId]: false }));
     }
@@ -207,10 +219,12 @@ function ReservasTab() {
   const handleSearch = e => { setSearch(e.target.value); setPage(1); };
   
   if (loading) return <p className="vehiculos-hint">Cargando reservas...</p>;
-  if (error) return <p className="vehiculos-error">{error}</p>;
 
   return (
     <>
+  
+      
+
       <div className="vehiculos-tab-header">
         <input
           className="vehiculos-search"
@@ -326,8 +340,7 @@ function ReservasTab() {
                                 <button
                                   className="btn-reactivar-reserva"
                                   onClick={() => abrirConfirmacionReactivar(r.id)}
-                                  disabled={actionLoading[r.id]}
-                                  style={{ backgroundColor: "#10b981", color: "#fff", border: "none", padding: "4px 8px", borderRadius: "4px", cursor: "pointer" }}
+                                  disabled={actionLoading[r.id] || deactivateButtonReactivar}
                                 >
                                   {actionLoading[r.id] ? "..." : "Reactivar"}
                                 </button>
@@ -403,6 +416,17 @@ function ReservasTab() {
                 {confirmModal.type === "cancel" ? "Sí, Cancelar" : "Sí, Reactivar"}
               </button>
             </div>
+          </div>
+        </div>
+      )}
+
+    { error && (
+        <div className="error-toast">
+          <div className="error-toast-content">
+            <div className="error-toast-text">
+              <p className="error-toast-message">{error}</p>
+            </div>
+            
           </div>
         </div>
       )}

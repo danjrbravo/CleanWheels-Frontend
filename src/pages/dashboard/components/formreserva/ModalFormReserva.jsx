@@ -111,6 +111,7 @@ export default function ModalFormReserva({
   const [submitting, setSubmitting] = useState(false);
   const [errorPost, setErrorPost] = useState(null);
   const [validacionMsg, setValidacionMsg] = useState(null);
+  const [showSuccessToast, setShowSuccessToast] = useState(false);
 
   const [modalVehiculoOpen, setModalVehiculoOpen] = useState(false);
 
@@ -291,8 +292,13 @@ export default function ModalFormReserva({
         throw new Error(json.message || json.error || `Error ${r.status}`);
       }
 
-      onConfirmada?.(json.data);
-      onClose();
+      // Mostrar toast de éxito
+      setShowSuccessToast(true);
+      
+      setTimeout(() => {
+        onConfirmada?.(); // esto ahora llama handleCerrarTodo que incrementa refreshKey
+      }, 2000);
+
     } catch (err) {
       setErrorPost(err.message || "No se pudo crear la reserva.");
     } finally {
@@ -326,6 +332,19 @@ export default function ModalFormReserva({
 
   return (
     <>
+      {/* Toast de \u00e9xito */}
+      {showSuccessToast && (
+        <div className="mfr-success-toast">
+          <div className="mfr-toast-content">
+            <span className="mfr-toast-icon">✓</span>
+            <div className="mfr-toast-text">
+              <p className="mfr-toast-title">¡Reserva Confirmada!</p>
+              <p className="mfr-toast-message">Tu reserva ha sido guardada en el sistema. Te esperamos.</p>
+            </div>
+          </div>
+        </div>
+      )}
+
       <div className="mfr-backdrop" onClick={handleBackdrop}>
         <div className="mfr-box">
 

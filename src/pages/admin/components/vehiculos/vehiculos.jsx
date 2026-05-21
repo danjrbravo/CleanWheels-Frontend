@@ -80,16 +80,30 @@ export default function Vehiculos() {
       const res = await fetch(`${API_BASE}/booking/reservations/vehicle/${plate}`, {
         headers: { Authorization: `Bearer ${getToken()}` },
       });
-      if (!res.ok) throw new Error(`Error ${res.status}: ${res.statusText}`);
+      
       const json = await res.json();
-      if (!json.success) throw new Error(json.message ?? "Error al obtener reservas");
+      
+      if (!json.success) throw new Error(json.error ?? "Error al obtener reservas");
+
+      console.log("Respuesta del servidor:", json);
+      if(!json.success && json.error.contains("no existe en el sistema")) {
+        setError(`No existen reservas encontradas en el sistema para la placa "${plate}"`);
+        return;
+      }
+        setReservations([]);
+        setCurrentPlate(plate);
       
       setReservations(json.data ?? []);
       setCurrentPlate(plate);
       setSearched(true);
       setActiveTab("Todos");
     } catch (e) {
-      setError(e.message);
+      if(e.message.includes("no existe en el sistema")) {
+        setError(`No existen reservas encontradas en el sistema para la placa "${plate}"`);
+      } else {
+        setError(e.message || "Error al obtener reservas");
+      }
+      
       setReservations([]);
       setSearched(true);
     } finally {
