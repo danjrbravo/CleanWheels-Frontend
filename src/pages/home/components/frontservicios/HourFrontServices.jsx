@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import ServicesCard from '../ServicesCard/ServicesCard';
 import './HourFrontServices.css'
+import { BACKEND_URL } from '../../../../url';
 
 const HourFrontServices = () => {
   const [hour, setHour] = useState(`${new Date().getHours().toString().padStart(2, '0')}:00`)
@@ -42,7 +43,7 @@ const HourFrontServices = () => {
           return
         }
 
-        const response = await fetch('http://localhost:8080/api/booking/reservations/upcoming', {
+        const response = await fetch(`${BACKEND_URL}/booking/reservations/upcoming`, {
           method: 'GET',
           headers: {
             'Authorization': `Bearer ${token}`,

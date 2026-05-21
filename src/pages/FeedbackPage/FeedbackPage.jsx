@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import "./FeedbackPage.css";
+import { BACKEND_URL  as API_BASE } from "../../url";
 
-const API_BASE = "http://localhost:8080/api";
 const STARS = [1, 2, 3, 4, 5];
 const LABELS = ["", "Muy malo", "Malo", "Regular", "Bueno", "¡Excelente!"];
 

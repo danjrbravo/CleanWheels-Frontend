@@ -1,7 +1,7 @@
 ﻿import { useState } from "react";
 import "./Vehiculos.css";
+import { BACKEND_URL as API_BASE } from "../../../../url";
 
-const API_BASE = "http://localhost:8080/api";
 const getToken = () => localStorage.getItem("token") || "";
 
 const TABS = ["Todos", "Confirmada", "Pendiente", "Finalizada", "Cancelada"];

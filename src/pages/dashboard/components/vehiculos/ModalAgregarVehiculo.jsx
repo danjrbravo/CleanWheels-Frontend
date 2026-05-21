@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { createPortal } from "react-dom";
 import "./ModalAgregarVehiculo.css";
+import { BACKEND_URL } from "../../../../url";
 
 const getAuthToken = () => localStorage.getItem("token");
 
@@ -18,7 +19,7 @@ const getUserIdFromToken = () => {
   }
 };
 
-const API_BASE = "http://localhost:8080/api/booking";
+const API_BASE = `${BACKEND_URL}/booking`;
 
 const OTRA_MARCA = "OTRA_MARCA";
 

@@ -3,6 +3,7 @@ import "./Vehiculos.css";
 import ModalAgregarVehiculo from "./ModalAgregarVehiculo";
 import ModalServicios from "../servicios/ModalServicios";
 import ModalFormReserva from "../formreserva/ModalFormReserva";
+import { BACKEND_URL } from "../../../../url";
 
 function getVehiculoIcon(tipo) {
   // Si viene número
@@ -90,7 +91,7 @@ function ReservasTab() {
     const userId = getUserIdFromToken(token);
     if (!userId) { setError("No se pudo identificar el usuario"); setLoading(false); return; }
 
-    fetch(`http://localhost:8080/api/booking/reservations/user/${userId}`, {
+    fetch(`${BACKEND_URL}/booking/reservations/user/${userId}`, {
       headers: { Authorization: `Bearer ${token}` },
     })
       .then(r => { if (!r.ok) throw new Error(`Error ${r.status}`); return r.json(); })
@@ -137,7 +138,7 @@ function ReservasTab() {
     const endpoint = type === "cancel" ? "cancel" : "reactivate";
 
     try {
-      const res = await fetch(`http://localhost:8080/api/booking/reservations/${reservationId}/${endpoint}`, {
+      const res = await fetch(`${BACKEND_URL}/booking/reservations/${reservationId}/${endpoint}`, {
         method: "PATCH",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -471,7 +472,7 @@ function VehiculosTab() {
     if (!userId) { setError("No se pudo identificar el usuario"); setLoading(false); return; }
 
     setLoading(true);
-    fetch(`http://localhost:8080/api/booking/vehicles/${userId}`, {
+    fetch(`${BACKEND_URL}/booking/vehicles/${userId}`, {
       headers: { Authorization: `Bearer ${token}` },
     })
       .then(r => { if (!r.ok) throw new Error(`Error ${r.status}`); return r.json(); })

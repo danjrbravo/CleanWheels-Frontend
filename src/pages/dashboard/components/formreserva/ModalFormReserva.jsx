@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import "./ModalFormReserva.css";
 import ModalAgregarVehiculo from "../vehiculos/ModalAgregarVehiculo";
+import { BACKEND_URL } from "../../../../url";
 
 const DIAS = ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"];
 const MESES = ["Ene","Feb","Mar","Abr","May","Jun","Jul","Ago","Sep","Oct","Nov","Dic"];
@@ -134,12 +135,12 @@ export default function ModalFormReserva({
       let url;
       if (role === "ADMIN") {
         // ADMIN: Obtener todos los vehículos
-        url = "http://localhost:8080/api/booking/vehicles";
+        url = `${BACKEND_URL}/booking/vehicles`;
       } else {
         // CLIENT: Obtener solo los vehículos del usuario
         const userId = getUserIdFromToken(token);
         if (!userId) throw new Error("No se encontró ID de usuario en el token");
-        url = `http://localhost:8080/api/booking/vehicles/${userId}`;
+        url = `${BACKEND_URL}/booking/vehicles/${userId}`;
       }
 
       fetch(url, {
@@ -204,7 +205,7 @@ export default function ModalFormReserva({
 
     const token = localStorage.getItem("token");
 
-    fetch(`http://localhost:8080/api/booking/reservations/calendar/week?week_start=${weekStart}`, {
+    fetch(`${BACKEND_URL}/booking/reservations/calendar/week?week_start=${weekStart}`, {
       headers: {
         Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
@@ -264,7 +265,7 @@ export default function ModalFormReserva({
     };
 
     try {
-      const r = await fetch("http://localhost:8080/api/booking/reservations/", {
+      const r = await fetch(`${BACKEND_URL}/booking/reservations/`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,

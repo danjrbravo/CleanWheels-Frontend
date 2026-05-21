@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import "./ModalServicios.css";
 import ModalFormReserva from "../formreserva/ModalFormReserva";
+import { BACKEND_URL } from "../../../../url";
 
 // Categorías que permiten selección múltiple — ajusta según tu backend
 const CATEGORIAS_MULTIPLES = new Set(["Lavado Interior"]);
@@ -27,7 +28,7 @@ export default function ModalServicios({ onClose, onAgendar, timeSelected = null
   useEffect(() => {
     const token = localStorage.getItem("token");
 
-    fetch("http://localhost:8080/api/booking/services/", {
+    fetch(`${BACKEND_URL}/booking/services/`, {
       headers: {
         "Authorization": `Bearer ${token}`,
         "Content-Type": "application/json",

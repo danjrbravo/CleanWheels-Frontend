@@ -4,6 +4,7 @@ import Sidebar from "./components/sidebar/Sidebar";
 import Reservas from "./components/reservas/Reservas";
 import Vehiculos from "./components/vehiculos/Vehiculos";
 import "./Dashboard.css";
+import { BACKEND_URL } from "../../url";
 
 const PAGES = {
   reservas: <Reservas />,
@@ -19,7 +20,7 @@ export default function Dashboard() {
     localStorage.removeItem("user")
 
     try {
-      const res = await fetch("http://localhost:8080/api/auth/guest", { method: "POST" })
+      const res = await fetch(`${BACKEND_URL}/auth/guest`, { method: "POST" })
       const data = await res.json()
       const token = data.token?.token || data.token
       if (token) localStorage.setItem("token", token)

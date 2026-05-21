@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { uploadImageToCloudinary } from '../../../../services/cloudinaryService'
 import ImageUpload from './components/ImageUpload'
 import './Servicios.css'
+import { BACKEND_URL } from '../../../../url'
 
 const formularioVacio = { name: "", price: "", description: "", duration: "", is_active: true, category_id: "", url: "" }
 const categoriaVacia = { name: "", description: "" }
@@ -27,7 +28,7 @@ export default function Servicios() {
 
   const cargarServicios = async () => {
     try {
-      const res = await fetch("http://localhost:8080/api/booking/services/admin", { headers })
+      const res = await fetch(`${BACKEND_URL}/booking/services/admin`, { headers })
       const data = await res.json()
       setServicios(data.data)
     } catch (err) {
@@ -37,7 +38,7 @@ export default function Servicios() {
 
   const cargarCategorias = async () => {
     try {
-      const res = await fetch("http://localhost:8080/api/booking/categories", { headers })
+      const res = await fetch(`${BACKEND_URL}/booking/categories`, { headers })
       const data = await res.json()
       setCategorias(data.data || data)
     } catch (err) {
@@ -129,11 +130,11 @@ export default function Servicios() {
       }
 
       if (editandoId !== null) {
-        await fetch(`http://localhost:8080/api/booking/services/${editandoId}`, {
+        await fetch(`${BACKEND_URL}/booking/services/${editandoId}`, {
           method: "PATCH", headers, body: JSON.stringify(body)
         })
       } else {
-        await fetch("http://localhost:8080/api/booking/services/", {
+        await fetch(`${BACKEND_URL}/booking/services/`, {
           method: "POST", headers, body: JSON.stringify(body)
         })
       }
@@ -166,7 +167,7 @@ export default function Servicios() {
   const handleEliminar = async (id) => {
     if (window.confirm('¿Estás seguro de que quieres eliminar este servicio?')) {
       try {
-        await fetch(`http://localhost:8080/api/booking/services/${id}`, { method: "DELETE", headers })
+        await fetch(`${BACKEND_URL}/booking/services/${id}`, { method: "DELETE", headers })
         await cargarServicios()
       } catch (err) {
         console.error("Error eliminando servicio:", err)
@@ -177,7 +178,7 @@ export default function Servicios() {
 
   const handleActivar = async (id) => {
     try {
-      await fetch(`http://localhost:8080/api/booking/services/${id}/activate`, { method: "PATCH", headers })
+      await fetch(`${BACKEND_URL}/booking/services/${id}/activate`, { method: "PATCH", headers })
       await cargarServicios()
     } catch (err) {
       console.error("Error activando servicio:", err)
@@ -187,7 +188,7 @@ export default function Servicios() {
 
   const handleDesactivar = async (id) => {
     try {
-      await fetch(`http://localhost:8080/api/booking/services/${id}/deactivate`, { method: "PATCH", headers })
+      await fetch(`${BACKEND_URL}/booking/services/${id}/deactivate`, { method: "PATCH", headers })
       await cargarServicios()
     } catch (err) {
       console.error("Error desactivando servicio:", err)
@@ -217,11 +218,11 @@ export default function Servicios() {
 
     try {
       if (editandoCatId !== null) {
-        await fetch(`http://localhost:8080/api/booking/categories/${editandoCatId}`, {
+        await fetch(`${BACKEND_URL}/booking/categories/${editandoCatId}`, {
           method: "PATCH", headers, body: JSON.stringify(formularioCat)
         })
       } else {
-        await fetch("http://localhost:8080/api/booking/categories", {
+        await fetch(`${BACKEND_URL}/booking/categories`, {
           method: "POST", headers, body: JSON.stringify(formularioCat)
         })
       }
@@ -244,7 +245,7 @@ export default function Servicios() {
   const handleEliminarCat = async (id) => {
     if (window.confirm('¿Estás seguro de que quieres eliminar esta categoría?')) {
       try {
-        await fetch(`http://localhost:8080/api/booking/categories/${id}`, { method: "DELETE", headers })
+        await fetch(`${BACKEND_URL}/booking/categories/${id}`, { method: "DELETE", headers })
         await cargarCategorias()
       } catch (err) {
         console.error("Error eliminando categoría:", err)

@@ -2,6 +2,7 @@ import { useEffect, useState, useRef } from "react";
 import "./Reservas.css";
 import ModalServicios from "../servicios/ModalServicios";
 import ModalFormReserva from "../formreserva/ModalFormReserva";
+import { BACKEND_URL } from "../../../../url";
 
 function pad(value) {
   return String(value).padStart(2, "0");
@@ -99,7 +100,7 @@ export default function Reservas() {
 
       const token = localStorage.getItem("token");
       const response = await fetch(
-        `http://localhost:8080/api/booking/reservations/calendar/week?week_start=${weekStart}`,
+        `${BACKEND_URL}/booking/reservations/calendar/week?week_start=${weekStart}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
