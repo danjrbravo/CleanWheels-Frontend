@@ -22,6 +22,11 @@
   overflow: hidden;
   border-bottom: 1px solid var(--border-color);
 }
+.hero-right {
+   background-image: 
+    linear-gradient(rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.55)), 
+    url('../../../../assets/gt_car.jpeg');
+}
 
 .hero-left {
   width: 45%;

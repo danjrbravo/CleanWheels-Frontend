@@ -35,7 +35,7 @@ const Herobanner = () => {
             <button className='agendar' onClick={handleAgendar}>Agendar ya</button>
         </div>
         <div className='hero-right'>
-            <img src="src/assets/gt_car.jpeg" alt="reactlogo" />
+            
         </div>
     </div>
   )
